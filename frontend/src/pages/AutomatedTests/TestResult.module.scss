@@ -1,0 +1,82 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.resultCard {
+  margin-top: 24px;
+}
+
+.resultTitle {
+  display: block;
+  color: vars.$sys-primary-accent-default;
+  margin-bottom: 16px;
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.metadataItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dependencies {
+  margin: 16px 0;
+}
+
+.sectionTitle {
+  display: block;
+  color: vars.$sys-primary-accent-default;
+  margin-bottom: 16px;
+}
+
+.dependencyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dependency {
+  padding: 6px 12px;
+  background: vars.$sys-neutral-background2-level;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+.codeSection {
+  margin-top: 16px;
+  position: relative;
+}
+
+.code {
+  background: vars.$sys-neutral-background;
+  border-radius: 4px;
+  color: vars.$sys-primary-accent-default;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  max-height: 600px;
+  overflow: auto;
+  padding: 16px;
+}
+
+.copyButton {
+  background: vars.$sys-neutral-background;
+  border: 1px solid vars.$sys-neutral-decor-default;
+  border-radius: 4px;
+  cursor: pointer;
+  color: vars.$sys-primary-accent-default;
+  font-size: 12px;
+  padding: 6px 12px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.copyButton:hover {
+  background: vars.$sys-neutral-background2-level;
+}

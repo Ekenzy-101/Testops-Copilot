@@ -1,0 +1,104 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.drawerToggle {
+  display: none;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  border-bottom: 1px solid vars.$sys-neutral-decor-default;
+  background: vars.$sys-neutral-background1-level;
+  padding: 0 16px;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 1rem;
+  height: 64px;
+}
+
+.logo {
+  height: 50px;
+  width: 120px;
+}
+
+.main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.nav {
+  display: flex;
+  flex: 1;
+
+  .logo {
+    display: none;
+  }
+}
+
+.navLink {
+  margin: auto;
+  text-decoration: none;
+  color: vars.$sys-neutral-accent-default;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  color: vars.$sys-primary-accent-default !important;
+}
+
+.navLinkActive {
+  color: vars.$sys-primary-accent-default !important;
+}
+
+.themeToggle {
+  min-width: 50px !important;
+}
+
+.toast {
+  background: vars.$sys-neutral-background1-level;
+}
+
+@media (max-width: 830px) {
+  .headerContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .nav {
+      display: none;
+    }
+
+    .drawerToggle {
+      display: block !important;
+    }
+  }
+
+  .nav {
+    flex-direction: column;
+    gap: 24px;
+    justify-content: flex-start;
+
+    .logo {
+      display: block;
+    }
+  }
+
+  .navLink {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+}

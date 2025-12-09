@@ -1,0 +1,36 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables.scss" as vars;
+@use "@snack-uikit/figma-tokens/build/scss/brand.scss" as brands;
+
+.light {
+  @include brands.lightThemeMode;
+}
+
+.dark {
+  @include brands.darkThemeMode;
+}
+
+* {
+  box-sizing: border-box;
+  font-family:
+    "Roboto", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif !important;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: vars.$sys-neutral-text-main;
+  background: vars.$sys-neutral-background;
+}
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+#root {
+  max-width: 100vw;
+  min-height: 100vh;
+}

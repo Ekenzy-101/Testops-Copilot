@@ -1,0 +1,65 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.actions {
+  display: flex;
+  margin-left: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.title {
+  color: vars.$sys-primary-accent-default;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 768px) {
+  .actions {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.result {
+  background: vars.$sys-neutral-background2-level;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 16px;
+}
+
+.hotspots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.hotspot {
+  padding: 10px;
+  border: 1px solid vars.$sys-neutral-decor-default;
+  border-radius: 6px;
+  background: vars.$sys-neutral-background;
+}
+
+.summary {
+  margin-top: 8px;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,58 @@
+{
+  "name": "testops-copilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rsbuild build",
+    "dev": "rsbuild dev --open",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "@snack-uikit/button": "^0.19.16",
+    "@snack-uikit/card": "^0.20.11",
+    "@snack-uikit/divider": "^3.2.10",
+    "@snack-uikit/drawer": "^0.13.9",
+    "@snack-uikit/fields": "^0.51.12",
+    "@snack-uikit/figma-tokens": "^19.0.0",
+    "@snack-uikit/loaders": "^0.9.9",
+    "@snack-uikit/notification": "^0.13.23",
+    "@snack-uikit/tabs": "^0.10.14",
+    "@snack-uikit/toggles": "^0.13.23",
+    "@snack-uikit/typography": "^0.8.11",
+    "@snack-uikit/utils": "^4.0.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.10.1",
+    "react-toastify": "^11.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@rsbuild/core": "^1.6.13",
+    "@rsbuild/plugin-node-polyfill": "^1.4.2",
+    "@rsbuild/plugin-react": "^1.4.2",
+    "@rsbuild/plugin-sass": "^1.4.0",
+    "@rsbuild/plugin-svgr": "^1.2.2",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1"
+  },
+  "overrides": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "resolutions": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  }
+}

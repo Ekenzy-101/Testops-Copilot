@@ -1,0 +1,51 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.actions {
+  display: flex;
+  margin-left: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow {
+  display: flex;
+  gap: 16px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.title {
+  color: vars.$sys-primary-accent-default;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 768px) {
+  .actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .formRow {
+    flex-direction: column;
+  }
+}

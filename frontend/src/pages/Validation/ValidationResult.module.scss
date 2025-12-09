@@ -1,0 +1,125 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.summaryCard,
+.sectionTitle {
+  color: vars.$sys-primary-accent-default;
+  margin-bottom: 16px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: vars.$sys-neutral-background2-level;
+  border-radius: 4px;
+}
+
+.summaryText {
+  margin-top: 16px;
+  padding: 16px;
+  background: vars.$sys-neutral-background2-level;
+  border-radius: 4px;
+}
+
+.testResult {
+  padding: 16px;
+  background: vars.$sys-neutral-background2-level;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.testHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.testId {
+  font-weight: 600;
+}
+
+.testStatus {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.compliance {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: vars.$sys-neutral-background;
+  border-radius: 4px;
+}
+
+.complianceItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.issues {
+  margin-top: 12px;
+}
+
+.label {
+  display: block;
+  font-weight: 600 !important;
+  margin-bottom: 8px;
+}
+
+.issue {
+  padding: 12px;
+  background: vars.$sys-neutral-background;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  border-left: 3px solid vars.$sys-neutral-decor-default;
+}
+
+.issueHeader {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.recommendation {
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.error {
+  color: vars.$sys-red-text-main !important;
+  font-weight: 500 !important;
+}
+
+.info {
+  color: vars.$sys-blue-text-main !important;
+  font-weight: 500 !important;
+}
+
+.success {
+  color: vars.$sys-green-text-main !important;
+  font-weight: 500 !important;
+}
+
+.warning {
+  color: vars.$sys-yellow-text-main !important;
+  font-weight: 500 !important;
+}

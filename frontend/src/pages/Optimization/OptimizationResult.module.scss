@@ -1,0 +1,102 @@
+@use "@snack-uikit/figma-tokens/build/scss/styles-theme-variables" as vars;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.sectionTitle {
+  display: block;
+  color: vars.$sys-primary-accent-default;
+  margin-bottom: 16px;
+}
+
+.coverageStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: vars.$sys-neutral-background;
+  border-radius: 4px;
+}
+
+.uncovered {
+  margin-top: 16px;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.list {
+  margin: 8px 0;
+  padding-left: 24px;
+  color: vars.$sys-neutral-text-main;
+}
+
+.duplicate,
+.gap,
+.suggestion {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background: vars.$sys-neutral-background;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.gapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.suggestedTests {
+  margin-top: 8px;
+}
+
+.suggestionMeta {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.recommendation {
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.issueSection {
+  margin-top: 16px;
+}
+
+.error {
+  color: vars.$sys-red-text-main !important;
+  font-weight: 500 !important;
+}
+
+.info {
+  color: vars.$sys-blue-text-main !important;
+  font-weight: 500 !important;
+}
+
+.success {
+  color: vars.$sys-green-text-main !important;
+  font-weight: 500 !important;
+}
+
+.warning {
+  color: vars.$sys-yellow-text-main !important;
+  font-weight: 500 !important;
+}
