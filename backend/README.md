@@ -29,11 +29,11 @@ FastAPI service powering the QA copilot features.
 
 ### Required environment variables
 
+- `APP_ORIGINS` – Comma-separated CORS origins (default: \*)
+- `GITLAB_ACCESS_TOKEN` – GitLab Personal Access Token
 - `OPENAI_API_KEY` – Cloud.ru Evolution Foundation Model token
 - `OPENAI_API_URL` – API base (default: https://foundation-models.api.cloud.ru/v1)
 - `OPENAI_MODEL` – Model name (default: ai-sage/GigaChat3-10B-A1.8B)
-- `GITLAB_ACCESS_TOKEN` – GitLab Personal Access Token
-- `APP_ORIGINS` – Comma-separated CORS origins (default: \*)
 
 ## Running locally
 

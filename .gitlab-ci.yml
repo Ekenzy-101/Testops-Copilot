@@ -45,7 +45,7 @@ backend:lint:
 
 backend:deploy:
   before_script:
-    - cd frontend
+    - cd backend
     - npm install -g vercel@latest
   environment:
     name: production
@@ -59,12 +59,13 @@ backend:deploy:
     - echo "Deploying backend to Vercel..."
     - |
       if [ -n "$VERCEL_TOKEN" ] && [ -n "$VERCEL_ORG_ID" ]; then
-        export VERCEL_PROJECT_ID=prj_AtuLdmdvI4o00My6H01auw3wClAN
         vercel --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --prod --yes || echo "Deployment failed or not configured"
       else
         echo "Vercel credentials not configured. Set VERCEL_TOKEN and VERCEL_ORG_ID CI/CD variables."
         exit 1
       fi
+  variables:
+    VERCEL_PROJECT_ID: prj_AtuLdmdvI4o00My6H01auw3wClAN
 
 # Frontend Jobs
 .frontend_template: &frontend_template
@@ -125,9 +126,10 @@ frontend:deploy:
     - echo "Deploying frontend to Vercel..."
     - |
       if [ -n "$VERCEL_TOKEN" ] && [ -n "$VERCEL_ORG_ID" ]; then
-        export VERCEL_PROJECT_ID=prj_P3LExRDOk5MSOKaQHc1y9oafHgDA
         vercel --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --prod --yes
       else
         echo "Vercel credentials not configured. Set VERCEL_TOKEN and VERCEL_ORG_ID CI/CD variables."
         exit 1
       fi
+  variables:
+    VERCEL_PROJECT_ID: prj_P3LExRDOk5MSOKaQHc1y9oafHgDA

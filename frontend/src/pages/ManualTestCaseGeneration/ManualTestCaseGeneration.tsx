@@ -8,7 +8,7 @@ import { Spinner } from "@snack-uikit/loaders";
 import { apiClient } from "../../services";
 import { GenerateManualTestCaseRequest, Priority } from "../../types";
 import { ManualTestCaseGenerationResult } from "./ManualTestCaseGenerationResult";
-import styles from "./ManualTestCaseGenerationResult.module.scss";
+import styles from "./ManualTestCaseGeneration.module.scss";
 
 export const ManualTestCaseGeneration = () => {
   const [formData, setFormData] = useState<GenerateManualTestCaseRequest>({
