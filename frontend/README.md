@@ -1,78 +1,54 @@
-# Kenzy QA Copilot - Frontend MVP v1.1
+# Kenzy QA Copilot - Frontend
 
-AI-powered test automation assistant frontend built with React and Snack UIKit.
+React 19 + Snack UIKit UI for the QA copilot.
 
 ## Features
 
-- **Manual Test Case Generation**: Generate Allure TestOps as Code test cases from requirements
-- **Automated Test Generation**: Generate e2e UI and API tests from test cases and specifications
-- **Test Case Optimization**: Analyze coverage, find duplicates, and suggest improvements
-- **Test Case Validation**: Validate test cases against Allure standards and AAA pattern
+- Automated Test Case Generation: generate e2e UI/API tests from specs
+- Defect Analysis: identify hotspots and recommendations from historical defects.
+- Manual Test Case Generation: produce Allure TestOps-as-Code from requirements
+- Test Case Commit: commit tests to GitLab
+- Test Case Optimization: detect duplicates, gaps, and improvements
+- Test Case Validation: enforce Allure standards and AAA pattern
+- Test Plan Generation: produce a concise, structured test plan from goals, scope, and risks.
+
+## Prerequisites
+
+- Node.js 22+ with npm
 
 ## Setup
 
-1. Install dependencies:
+1. Install dependencies: `npm install`
+2. Copy env: `cp .env.example .env`
+3. Set `PUBLIC_API_BASE_URL` (default `http://localhost:8000`)
+4. Start dev server: `npm run dev` (opens http://localhost:3000)
 
-```bash
-npm install
-```
+## Scripts
 
-2. Configure environment variables:
+- `npm run dev` — start Rsbuild dev server
+- `npm run build` — production build
+- `npm run preview` — preview the production build
+- `npm run lint` — run ESLint
+- `npm run format` — format with Prettier
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set `PUBLIC_API_BASE_URL` to your backend API URL (default: http://localhost:8000)
-
-3. Start the development server:
-
-```bash
-npm run dev
-```
-
-The app will be available at [http://localhost:3000](http://localhost:3000).
-
-## Build
-
-Build the app for production:
-
-```bash
-npm run build
-```
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
-
-## Tech Stack
-
-- **React 19** - UI library
-- **Snack UIKit** - Component library from Cloud.ru
-- **React Router** - Routing
-- **TypeScript** - Type safety
-- **Rsbuild** - Build tool
-
-## Project Structure
+## Project structure
 
 ```
 src/
-├── components/       # Reusable components
-│   └── Layout/      # Main layout and navigation
-├── pages/           # Page components
-│   ├── TestCaseGeneration/  # Test case generation page
-│   ├── AutoTestCaseGeneration/       # Automated test generation page
-│   ├── Optimization/         # Test optimization page
-│   └── Validation/            # Test validation page
-├── services/        # API client
-├── theme/           # Theme configuration
-└── types/           # TypeScript types
+├── components/            # Reusable UI (e.g., Layout)
+├── pages/                 # Feature pages (Manual/Auto Generation, Optimization, Validation)
+├── services/              # API client helpers
+├── utilities/             # Shared utils/constants
+├── theme/                 # Theme provider and Snack UIKit setup
+└── types/                 # Shared TypeScript types
 ```
 
-## Learn more
+## UI/tech stack
 
-- [Snack UIKit](https://github.com/cloud-ru-tech/snack-uikit) - Component library
-- [Rsbuild documentation](https://rsbuild.rs) - Build tool
-- [React Router](https://reactrouter.com/) - Routing library
+- React 19, TypeScript, React Router 7
+- Rsbuild for bundling; Snack UIKit for components
+
+## Development notes
+
+- Keep `PUBLIC_API_BASE_URL` pointing at the backend (local: `http://localhost:8000`)
+- Use `npm run lint` and `npm run format` before pushing changes

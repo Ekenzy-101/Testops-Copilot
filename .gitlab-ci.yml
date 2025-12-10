@@ -106,6 +106,7 @@ frontend:lint:
   stage: lint
   script:
     - echo "Linting frontend..."
+    - npm run format
     - npm run lint
 
 frontend:deploy:
