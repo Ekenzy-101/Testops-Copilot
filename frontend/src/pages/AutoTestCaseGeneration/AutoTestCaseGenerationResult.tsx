@@ -1,15 +1,14 @@
-/** Automated test result display */
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
-import type { AutomatedTestResponse } from "../../types/api";
-import styles from "./TestResult.module.scss";
+import { GenerateAutoTestCaseResponse } from "../../types";
+import styles from "./AutoTestCaseGenerationTestResult.module.scss";
 
 interface TestResultProps {
-  result: AutomatedTestResponse;
+  result: GenerateAutoTestCaseResponse;
 }
 
-export const TestResult = ({ result }: TestResultProps) => {
+export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
   return (
     <Card className={styles.resultCard}>
       <Typography

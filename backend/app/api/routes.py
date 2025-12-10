@@ -3,32 +3,32 @@
 from fastapi import APIRouter, HTTPException, status
 from typing import List
 from app.models import (
-    AutomatedTestRequest,
-    AutomatedTestResponse,
-    OptimizationRequest,
-    OptimizationReport,
-    TestCaseGenerationRequest,
-    TestCaseRequest,
-    TestCaseResponse,
-    ValidationRequest,
-    ValidationReport,
-    GitLabCommitRequest,
-    GitLabCommitResponse,
-    TestPlanRequest,
-    TestPlanResponse,
-    DefectAnalysisRequest,
-    DefectAnalysisResponse,
+    AnalyzeDefectRequest,
+    AnalyzeDefectResponse,
+    CommitTestCaseRequest,
+    CommitTestCaseResponse,
+    GenerateAutoTestCaseRequest,
+    GenerateAutoTestCaseResponse,
+    GenerateBatchTestCaseRequest,
+    GenerateManualTestCaseRequest,
+    GenerateManualTestCaseResponse,
+    GenerateTestPlanRequest,
+    GenerateTestPlanResponse,
+    OptimizeTestCaseRequest,
+    OptimizeTestCaseResponse,
+    ValidateTestCaseRequest,
+    ValidateTestCaseResponse,
 )
 from app.services import (
-    OpenAIAPIService,
-    TestCaseGeneratorService,
-    AutomatedTestGeneratorService,
-    TestOptimizerService,
-    TestValidatorService,
-    OpenAPIParserService,
-    GitLabAPIService,
-    TestPlanGeneratorService,
+    AutoTestCaseGeneratorService,
     DefectAnalyzerService,
+    GitLabAPIService,
+    ManualTestCaseGeneratorService,
+    OpenAPIParserService,
+    OpenAIAPIService,
+    TestOptimizerService,
+    TestPlanGeneratorService,
+    TestValidatorService,
 )
 
 router = APIRouter()
@@ -36,27 +36,63 @@ router = APIRouter()
 gitlab_api = GitLabAPIService()
 openai_api = OpenAIAPIService()
 openapi_parser = OpenAPIParserService()
-automated_test_generator = AutomatedTestGeneratorService(openai_api, openapi_parser)
-test_case_generator = TestCaseGeneratorService(openai_api)
+auto_test_generator = AutoTestCaseGeneratorService(openai_api, openapi_parser)
+defect_analyzer = DefectAnalyzerService(openai_api)
+manual_test_generator = ManualTestCaseGeneratorService(openai_api)
 test_optimizer = TestOptimizerService(openai_api)
 test_validator = TestValidatorService(openai_api)
 test_plan_generator = TestPlanGeneratorService(openai_api)
-defect_analyzer = DefectAnalyzerService(openai_api)
 
 
 @router.post(
-    "/automated-tests/generate",
-    response_model=AutomatedTestResponse,
+    "/defects/analyze",
+    response_model=AnalyzeDefectResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Analyze historical defects",
+    description="Identify hotspots and recommendations from historical defects",
+)
+async def analyze_defects(request: AnalyzeDefectRequest) -> AnalyzeDefectResponse:
+    """Analyze historical defects for hotspots."""
+    try:
+        return await defect_analyzer.analyze(request)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error analyzing defects: {str(e)}",
+        )
+
+
+@router.post(
+    "/test-cases/commit",
+    response_model=CommitTestCaseResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Commit test cases to GitLab",
+    description="Create or update a file with test cases in GitLab",
+)
+async def commit_test_cases(request: CommitTestCaseRequest) -> CommitTestCaseResponse:
+    """Commit test cases to GitLab."""
+    try:
+        return await gitlab_api.commit_file(request)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error committing test cases to GitLab: {str(e)}",
+        )
+
+
+@router.post(
+    "/test-cases/generate-auto",
+    response_model=GenerateAutoTestCaseResponse,
     status_code=status.HTTP_200_OK,
     summary="Generate automated tests",
     description="Generate automated e2e UI or API tests from test cases and specifications",
 )
-async def generate_automated_tests(
-    request: AutomatedTestRequest,
-) -> AutomatedTestResponse:
+async def generate_auto_test_cases(
+    request: GenerateAutoTestCaseRequest,
+) -> GenerateAutoTestCaseResponse:
     """Generate automated tests."""
     try:
-        return await automated_test_generator.generate_automated_tests(request)
+        return await auto_test_generator.generate(request)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
@@ -67,34 +103,18 @@ async def generate_automated_tests(
 
 
 @router.post(
-    "/test-cases/commit",
-    response_model=GitLabCommitResponse,
+    "/test-cases/generate-manual",
+    response_model=GenerateManualTestCaseResponse,
     status_code=status.HTTP_200_OK,
-    summary="Commit generated test cases to GitLab",
-    description="Create or update a file with generated test assets in GitLab",
-)
-async def commit_test_cases(request: GitLabCommitRequest) -> GitLabCommitResponse:
-    """Commit generated test artifacts to GitLab."""
-    try:
-        return await gitlab_api.commit_file(request)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error committing to GitLab: {str(e)}",
-        )
-
-
-@router.post(
-    "/test-cases/generate",
-    response_model=TestCaseResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Generate a single manual test case",
+    summary="Generate a manual test case",
     description="Generate a manual test case in Allure TestOps as Code format from requirements",
 )
-async def generate_test_case(request: TestCaseRequest) -> TestCaseResponse:
+async def generate_manual_test_case(
+    request: GenerateManualTestCaseRequest,
+) -> GenerateManualTestCaseResponse:
     """Generate a single test case."""
     try:
-        return await test_case_generator.generate_test_case(request)
+        return await manual_test_generator.generate(request)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -104,17 +124,17 @@ async def generate_test_case(request: TestCaseRequest) -> TestCaseResponse:
 
 @router.post(
     "/test-cases/generate-batch",
-    response_model=List[TestCaseResponse],
+    response_model=List[GenerateManualTestCaseResponse],
     status_code=status.HTTP_200_OK,
-    summary="Generate multiple test cases",
-    description="Generate multiple test cases in batch",
+    summary="Generate manual test cases",
+    description="Generate manual test cases in batch",
 )
 async def generate_test_cases(
-    request: TestCaseGenerationRequest,
-) -> List[TestCaseResponse]:
+    request: GenerateBatchTestCaseRequest,
+) -> List[GenerateManualTestCaseResponse]:
     """Generate multiple test cases."""
     try:
-        return await test_case_generator.generate_test_cases(request)
+        return await manual_test_generator.generate_batch(request)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -124,17 +144,17 @@ async def generate_test_cases(
 
 @router.post(
     "/test-cases/optimize",
-    response_model=OptimizationReport,
+    response_model=OptimizeTestCaseResponse,
     status_code=status.HTTP_200_OK,
     summary="Optimize test cases",
     description="Analyze test coverage, find duplicates, identify gaps, and suggest improvements",
 )
-async def optimize_test_cases(request: OptimizationRequest) -> OptimizationReport:
+async def optimize_test_cases(
+    request: OptimizeTestCaseRequest,
+) -> OptimizeTestCaseResponse:
     """Optimize test cases."""
     try:
-        return await test_optimizer.generate_optimization_report(
-            test_cases=request.test_cases, requirements=request.requirements
-        )
+        return await test_optimizer.optimize(request)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -144,15 +164,17 @@ async def optimize_test_cases(request: OptimizationRequest) -> OptimizationRepor
 
 @router.post(
     "/test-cases/validate",
-    response_model=ValidationReport,
+    response_model=ValidateTestCaseResponse,
     status_code=status.HTTP_200_OK,
     summary="Validate test cases",
     description="Validate test cases against Allure standards and AAA pattern",
 )
-async def validate_test_cases(request: ValidationRequest) -> ValidationReport:
+async def validate_test_cases(
+    request: ValidateTestCaseRequest,
+) -> ValidateTestCaseResponse:
     """Validate test cases."""
     try:
-        return await test_validator.validate_test_cases(request)
+        return await test_validator.validate(request)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -180,12 +202,14 @@ async def health_check():
 
 @router.post(
     "/test-plan/generate",
-    response_model=TestPlanResponse,
+    response_model=GenerateTestPlanResponse,
     status_code=status.HTTP_200_OK,
     summary="Generate a test plan",
     description="Generate a concise, structured test plan from goals, scope, and risks",
 )
-async def generate_test_plan(request: TestPlanRequest) -> TestPlanResponse:
+async def generate_test_plan(
+    request: GenerateTestPlanRequest,
+) -> GenerateTestPlanResponse:
     """Generate a test plan."""
     try:
         return await test_plan_generator.generate(request)
@@ -193,22 +217,4 @@ async def generate_test_plan(request: TestPlanRequest) -> TestPlanResponse:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating test plan: {str(e)}",
-        )
-
-
-@router.post(
-    "/defects/analyze",
-    response_model=DefectAnalysisResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Analyze historical defects",
-    description="Identify hotspots and recommendations from historical defects",
-)
-async def analyze_defects(request: DefectAnalysisRequest) -> DefectAnalysisResponse:
-    """Analyze historical defects for hotspots."""
-    try:
-        return await defect_analyzer.analyze(request)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error analyzing defects: {str(e)}",
         )

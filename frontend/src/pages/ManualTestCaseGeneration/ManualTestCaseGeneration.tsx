@@ -5,13 +5,13 @@ import { Card } from "@snack-uikit/card";
 import { FieldText, FieldTextArea, FieldSelect } from "@snack-uikit/fields";
 import { Typography } from "@snack-uikit/typography";
 import { Spinner } from "@snack-uikit/loaders";
-import { apiClient } from "../../services/api";
-import { TestCaseRequest, Priority } from "../../types/api";
-import { TestCaseResult } from "./TestCaseResult";
-import styles from "./TestCaseGeneration.module.scss";
+import { apiClient } from "../../services";
+import { GenerateManualTestCaseRequest, Priority } from "../../types";
+import { ManualTestCaseGenerationResult } from "./ManualTestCaseGenerationResult";
+import styles from "./ManualTestCaseGenerationResult.module.scss";
 
-export const TestCaseGeneration = () => {
-  const [formData, setFormData] = useState<TestCaseRequest>({
+export const ManualTestCaseGeneration = () => {
+  const [formData, setFormData] = useState<GenerateManualTestCaseRequest>({
     requirements: "",
     test_type: "UI",
     feature: "",
@@ -41,7 +41,7 @@ export const TestCaseGeneration = () => {
   };
 
   const handleChange = (
-    field: keyof TestCaseRequest,
+    field: keyof GenerateManualTestCaseRequest,
     value: string | Priority,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -172,7 +172,7 @@ export const TestCaseGeneration = () => {
         </div>
       )}
 
-      {result && <TestCaseResult result={result} />}
+      {result && <ManualTestCaseGenerationResult result={result} />}
     </div>
   );
 };

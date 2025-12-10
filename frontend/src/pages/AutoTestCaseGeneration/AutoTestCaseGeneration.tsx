@@ -1,4 +1,3 @@
-/** Automated test generation page */
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
@@ -12,12 +11,12 @@ import { Card } from "@snack-uikit/card";
 import { Tabs } from "@snack-uikit/tabs";
 import { Typography } from "@snack-uikit/typography";
 import { Spinner } from "@snack-uikit/loaders";
-import { apiClient } from "../../services/api";
-import { AutomatedTestRequest } from "../../types/api";
-import { TestResult } from "./TestResult";
-import styles from "./AutomatedTests.module.scss";
+import { apiClient } from "../../services";
+import { GenerateAutoTestCaseRequest } from "../../types";
+import { AutoTestCaseGenerationResult } from "./AutoTestCaseGenerationResult";
+import styles from "./AutoTestCaseGeneration.module.scss";
 
-export const AutomatedTests = () => {
+export const AutoTestCaseGeneration = () => {
   const [testType, setTestType] = useState<"UI" | "API">("UI");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -43,7 +42,7 @@ export const AutomatedTests = () => {
     setResult(null);
 
     try {
-      let request: AutomatedTestRequest;
+      let request: GenerateAutoTestCaseRequest;
 
       if (testType === "UI") {
         request = {
@@ -72,7 +71,7 @@ export const AutomatedTests = () => {
         };
       }
 
-      const response = await apiClient.generateAutomatedTests(request);
+      const response = await apiClient.generateAutoTestCaseGeneration(request);
       setResult(response);
     } catch (err: any) {
       toast(err?.message || "Failed to generate automated tests");
@@ -214,7 +213,7 @@ export const AutomatedTests = () => {
         </div>
       )}
 
-      {result && <TestResult result={result} />}
+      {result && <AutoTestCaseGenerationResult result={result} />}
     </div>
   );
 };

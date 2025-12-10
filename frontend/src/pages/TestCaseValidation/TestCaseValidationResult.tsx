@@ -1,13 +1,12 @@
-/** Validation result display */
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
-import { ValidationReport } from "../../types/api";
-import styles from "./ValidationResult.module.scss";
+import { ValidateTestCaseResponse } from "../../types";
 import { getClassNameByPercentage, getClassNameBySeverity } from "../../utils";
+import styles from "./TestCaseValidationResult.module.scss";
 
 interface ValidationResultProps {
-  result: ValidationReport;
+  result: ValidateTestCaseResponse;
 }
 
 export const ValidationResult = ({ result }: ValidationResultProps) => {

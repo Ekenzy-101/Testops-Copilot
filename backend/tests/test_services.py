@@ -1,16 +1,19 @@
-import asyncio
 import urllib
 import pytest
 from pytest_httpx import HTTPXMock
-
-from app.models.test_plan import TestPlanRequest
-from app.models.defect_analysis import DefectAnalysisRequest, DefectRecord
-from app.models.gitlab_api import GitLabCommitRequest
-from app.services.test_plan_generator import TestPlanGeneratorService
-from app.services.defect_analyzer import DefectAnalyzerService
-from app.services.gitlab_api import GitLabAPIService
-from app.services.openapi_parser import OpenAPIParserService
 from app.config import settings
+from app.models import (
+    AnalyzeDefectRequest,
+    DefectRecord,
+    CommitTestCaseRequest,
+    GenerateTestPlanRequest,
+)
+from app.services import (
+    DefectAnalyzerService,
+    GitLabAPIService,
+    OpenAPIParserService,
+    TestPlanGeneratorService,
+)
 
 
 class DummyOpenAI:
@@ -26,7 +29,7 @@ class DummyOpenAI:
 @pytest.mark.asyncio
 async def test_test_plan_generator_returns_sections():
     svc = TestPlanGeneratorService(DummyOpenAI())
-    req = TestPlanRequest(
+    req = GenerateTestPlanRequest(
         product="Calc",
         goals=["Reliability"],
         scope="Add/Remove items",
@@ -44,7 +47,7 @@ async def test_test_plan_generator_returns_sections():
 @pytest.mark.asyncio
 async def test_defect_analyzer_parses_hotspots():
     svc = DefectAnalyzerService(DummyOpenAI())
-    req = DefectAnalysisRequest(
+    req = AnalyzeDefectRequest(
         defects=[
             DefectRecord(
                 id="D1",
@@ -78,7 +81,7 @@ async def test_gitlab_api_commit_response(httpx_mock: HTTPXMock):
     )
 
     svc = GitLabAPIService()
-    req = GitLabCommitRequest(
+    req = CommitTestCaseRequest(
         project_id="1",
         file_path="tests/test_sample.py",
         content="# tests",

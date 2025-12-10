@@ -5,12 +5,12 @@ import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { FieldText, FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
-import { apiClient } from "../../services/api";
-import { GitLabCommitRequest, GitLabCommitResponse } from "../../types/api";
-import styles from "./GitLabCommit.module.scss";
+import { apiClient } from "../../services";
+import { CommitTestCaseRequest, CommitTestCaseResponse } from "../../types";
+import styles from "./TestCaseCommit.module.scss";
 
-export const GitLabCommit = () => {
-  const [form, setForm] = useState<GitLabCommitRequest>({
+export const TestCaseCommit = () => {
+  const [form, setForm] = useState<CommitTestCaseRequest>({
     project_id: "",
     branch: "main",
     file_path: "tests/generated/test_cases.py",
@@ -18,9 +18,9 @@ export const GitLabCommit = () => {
     commit_message: "Add generated test cases",
   });
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<GitLabCommitResponse | null>(null);
+  const [result, setResult] = useState<CommitTestCaseResponse | null>(null);
 
-  const handleChange = (field: keyof GitLabCommitRequest, value: string) => {
+  const handleChange = (field: keyof CommitTestCaseRequest, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 

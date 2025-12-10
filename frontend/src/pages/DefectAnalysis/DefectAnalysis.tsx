@@ -5,13 +5,13 @@ import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
-import { apiClient } from "../../services/api";
+import { apiClient } from "../../services";
 import {
-  DefectAnalysisRequest,
-  DefectAnalysisResponse,
+  AnalyzeDefectRequest,
+  AnalyzeDefectResponse,
   DefectRecord,
-} from "../../types/api";
-import styles from "./DefectInsights.module.scss";
+} from "../../types";
+import styles from "./DefectAnalysis.module.scss";
 
 const parseDefects = (value: string): DefectRecord[] => {
   // Expected per-line: id|title|severity|area|tags(comma)
@@ -34,11 +34,11 @@ const parseDefects = (value: string): DefectRecord[] => {
     .filter((d) => d.title);
 };
 
-export const DefectInsights = () => {
+export const DefectAnalysis = () => {
   const [defectsInput, setDefectsInput] = useState("");
   const [requirements, setRequirements] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<DefectAnalysisResponse | null>(null);
+  const [result, setResult] = useState<AnalyzeDefectResponse | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +52,7 @@ export const DefectInsights = () => {
         setLoading(false);
         return;
       }
-      const payload: DefectAnalysisRequest = {
+      const payload: AnalyzeDefectRequest = {
         defects,
         requirements: requirements || undefined,
       };
@@ -74,7 +74,7 @@ export const DefectInsights = () => {
         size="l"
         className={styles.title}
       >
-        Defect Insights
+        Analyze Historical Defects
       </Typography>
       <Typography family="mono" purpose="body" size="m">
         Identify hotspots and recommendations from historical defects.

@@ -1,15 +1,17 @@
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
-import type { TestCaseResponse } from "../../types/api";
-import styles from "./TestCaseResult.module.scss";
+import { GenerateManualTestCaseResponse } from "../../types";
 import { getClassNameByPriority } from "../../utils";
+import styles from "./ManualTestCaseGenerationResult.module.scss";
 
-interface TestCaseResultProps {
-  result: TestCaseResponse;
+interface ManualTestCaseGenerationResultProps {
+  result: GenerateManualTestCaseResponse;
 }
 
-export const TestCaseResult = ({ result }: TestCaseResultProps) => {
+export const ManualTestCaseGenerationResult = ({
+  result,
+}: ManualTestCaseGenerationResultProps) => {
   const { test_case, generation_time, model_used } = result;
 
   return (

@@ -5,6 +5,7 @@
 
 # Dist
 node_modules
+build/
 dist/
 
 # Environment variables

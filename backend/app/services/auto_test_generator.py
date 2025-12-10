@@ -7,8 +7,8 @@ from typing import List, Dict
 from app.services.openai_api import OpenAIAPIService
 from app.services.openapi_parser import OpenAPIParserService
 from app.models import (
-    AutomatedTestRequest,
-    AutomatedTestResponse,
+    GenerateAutoTestCaseRequest,
+    GenerateAutoTestCaseResponse,
     UITestRequest,
     APITestRequest,
 )
@@ -16,7 +16,7 @@ from app.models import (
 logger = logging.getLogger(__name__)
 
 
-class AutomatedTestGeneratorService:
+class AutoTestCaseGeneratorService:
     """Service for generating automated tests (UI e2e and API)."""
 
     def __init__(
@@ -126,7 +126,9 @@ Return ONLY the Python code, no explanations."""
 
         return prompt
 
-    async def generate_ui_tests(self, request: UITestRequest) -> AutomatedTestResponse:
+    async def generate_ui_tests(
+        self, request: UITestRequest
+    ) -> GenerateAutoTestCaseResponse:
         """
         Generate UI e2e automated tests.
 
@@ -159,13 +161,13 @@ You write clean, maintainable test code following best practices and design patt
             dependencies = self._extract_dependencies(generated_code, request.framework)
             generation_time = time.time() - start_time
 
-            return AutomatedTestResponse(
+            return GenerateAutoTestCaseResponse(
                 test_code=generated_code,
                 test_count=test_count,
                 framework=request.framework,
                 dependencies=dependencies,
                 generation_time=generation_time,
-                model_used="Cloud.ru OpenAI Foundation Model",
+                model_used=self.openai_api.model,
             )
         except Exception as e:
             logger.error(f"Error generating UI tests: {e}")
@@ -173,7 +175,7 @@ You write clean, maintainable test code following best practices and design patt
 
     async def generate_api_tests(
         self, request: APITestRequest
-    ) -> AutomatedTestResponse:
+    ) -> GenerateAutoTestCaseResponse:
         """
         Generate API automated tests.
 
@@ -219,21 +221,21 @@ You write comprehensive API tests that validate both positive and negative scena
             dependencies = self._extract_dependencies(generated_code, "pytest")
             generation_time = time.time() - start_time
 
-            return AutomatedTestResponse(
+            return GenerateAutoTestCaseResponse(
                 test_code=generated_code,
                 test_count=test_count,
                 framework="pytest",
                 dependencies=dependencies,
                 generation_time=generation_time,
-                model_used="Cloud.ru OpenAI Foundation Model",
+                model_used=self.openai_api.model,
             )
         except Exception as e:
             logger.error(f"Error generating API tests: {e}")
             raise
 
-    async def generate_automated_tests(
-        self, request: AutomatedTestRequest
-    ) -> AutomatedTestResponse:
+    async def generate(
+        self, request: GenerateAutoTestCaseRequest
+    ) -> GenerateAutoTestCaseResponse:
         """
         Generate automated tests based on request type.
 

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 
 
-class TestPlanRequest(BaseModel):
+class GenerateTestPlanRequest(BaseModel):
     """Request for test plan generation."""
 
     __test__ = False
@@ -19,7 +19,7 @@ class TestPlanRequest(BaseModel):
     timelines: Optional[str] = Field(None, description="Timelines or milestones")
 
 
-class TestPlanResponse(BaseModel):
+class GenerateTestPlanResponse(BaseModel):
     """Generated test plan."""
 
     __test__ = False

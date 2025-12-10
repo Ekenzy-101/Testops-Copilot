@@ -1,8 +1,8 @@
 """Service layer."""
 
 from .openai_api import OpenAIAPIService
-from .test_case_generator import TestCaseGeneratorService
-from .automated_test_generator import AutomatedTestGeneratorService
+from .manual_test_generator import ManualTestCaseGeneratorService
+from .auto_test_generator import AutoTestCaseGeneratorService
 from .test_optimizer import TestOptimizerService
 from .test_validator import TestValidatorService
 from .openapi_parser import OpenAPIParserService
@@ -12,8 +12,8 @@ from .defect_analyzer import DefectAnalyzerService
 
 __all__ = [
     "OpenAIAPIService",
-    "TestCaseGeneratorService",
-    "AutomatedTestGeneratorService",
+    "ManualTestCaseGeneratorService",
+    "AutoTestCaseGeneratorService",
     "TestOptimizerService",
     "TestValidatorService",
     "OpenAPIParserService",

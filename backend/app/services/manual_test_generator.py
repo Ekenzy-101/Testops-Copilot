@@ -4,20 +4,21 @@ import re
 import logging
 import time
 from typing import List
-from app.services.openai_api import OpenAIAPIService
 from app.models import (
     TestCase,
-    TestCaseRequest,
+    GenerateManualTestCaseRequest,
     TestCaseStep,
     Priority,
-    TestCaseGenerationRequest,
-    TestCaseResponse,
+    GenerateBatchTestCaseRequest,
+    GenerateManualTestCaseResponse,
 )
+from app.services.openai_api import OpenAIAPIService
+from app.utils.exceptions import TestGenerationError
 
 logger = logging.getLogger(__name__)
 
 
-class TestCaseGeneratorService:
+class ManualTestCaseGeneratorService:
     """Service for generating manual test cases in Allure TestOps as Code format."""
 
     __test__ = False
@@ -100,7 +101,9 @@ Return ONLY the Python code, no explanations."""
 
         return prompt
 
-    def _parse_generated_code(self, code: str, request: TestCaseRequest) -> TestCase:
+    def _parse_generated_code(
+        self, code: str, request: GenerateManualTestCaseRequest
+    ) -> TestCase:
         """Parse generated code and extract test case structure."""
         # Extract test title
         title_match = re.search(r'@allure\.title\(["\'](.+?)["\']\)', code)
@@ -166,7 +169,9 @@ Return ONLY the Python code, no explanations."""
             return match.group(0).strip()
         return f"# {section_type.capitalize()} section"
 
-    async def generate_test_case(self, request: TestCaseRequest) -> TestCaseResponse:
+    async def generate(
+        self, request: GenerateManualTestCaseRequest
+    ) -> GenerateManualTestCaseResponse:
         """
         Generate a single test case.
 
@@ -206,19 +211,19 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
             test_case.code = generated_code  # Use cleaned code
             generation_time = time.time() - start_time
 
-            return TestCaseResponse(
+            return GenerateManualTestCaseResponse(
                 test_case=test_case,
                 generation_time=generation_time,
-                model_used="Cloud.ru OpenAI Foundation Model",
+                model_used=self.openai_api.model,
             )
 
         except Exception as e:
             logger.error(f"Error generating test case: {e}")
-            raise
+            raise TestGenerationError("Failed to generate manual test case")
 
-    async def generate_test_cases(
-        self, request: TestCaseGenerationRequest
-    ) -> List[TestCaseResponse]:
+    async def generate_batch(
+        self, request: GenerateBatchTestCaseRequest
+    ) -> List[GenerateManualTestCaseResponse]:
         """
         Generate multiple test cases.
 
@@ -231,7 +236,7 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
         results = []
 
         for i in range(request.count):
-            test_request = TestCaseRequest(
+            test_request = GenerateManualTestCaseRequest(
                 requirements=request.requirements,
                 test_type=request.test_type,
                 feature=request.feature,
@@ -240,7 +245,7 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
                 priority=Priority.NORMAL,
             )
 
-            result = await self.generate_test_case(test_request)
+            result = await self.generate(test_request)
             results.append(result)
 
         return results

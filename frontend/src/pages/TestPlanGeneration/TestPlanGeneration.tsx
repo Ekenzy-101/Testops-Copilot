@@ -5,12 +5,12 @@ import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { FieldText, FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
-import { apiClient } from "../../services/api";
-import { TestPlanRequest, TestPlanResponse } from "../../types/api";
-import styles from "./TestPlan.module.scss";
+import { apiClient } from "../../services";
+import { GenerateTestPlanRequest, GenerateTestPlanResponse } from "../../types";
+import styles from "./TestPlanGeneration.module.scss";
 
-export const TestPlan = () => {
-  const [form, setForm] = useState<TestPlanRequest>({
+export const TestPlanGeneration = () => {
+  const [form, setForm] = useState<GenerateTestPlanRequest>({
     product: "",
     goals: [],
     scope: "",
@@ -20,9 +20,12 @@ export const TestPlan = () => {
     timelines: "",
   });
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<TestPlanResponse | null>(null);
+  const [result, setResult] = useState<GenerateTestPlanResponse | null>(null);
 
-  const handleChange = (field: keyof TestPlanRequest, value: string) => {
+  const handleChange = (
+    field: keyof GenerateTestPlanRequest,
+    value: string,
+  ) => {
     if (field === "goals") {
       setForm((prev) => ({
         ...prev,

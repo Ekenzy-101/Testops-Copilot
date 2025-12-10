@@ -5,7 +5,7 @@ import httpx
 import logging
 from typing import Optional, Dict, Any, List
 from app.config import settings
-from app.models import GitLabCommitRequest, GitLabCommitResponse
+from app.models import CommitTestCaseRequest, CommitTestCaseResponse
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,9 @@ class GitLabAPIService:
                 logger.error(f"GitLab API error: {e}")
                 raise
 
-    async def commit_file(self, request: GitLabCommitRequest) -> GitLabCommitResponse:
+    async def commit_file(
+        self, request: CommitTestCaseRequest
+    ) -> CommitTestCaseResponse:
         """Create or update a file in GitLab repository."""
         path = urllib.parse.quote(request.file_path, safe="")
         id = urllib.parse.quote(request.project_id, safe="")
@@ -69,7 +71,7 @@ class GitLabAPIService:
                 response = await client.post(url, headers=self.headers, json=json)
                 response.raise_for_status()
                 result = response.json()
-            return GitLabCommitResponse(
+            return CommitTestCaseResponse(
                 status="committed",
                 project_id=request.project_id,
                 branch=request.branch,

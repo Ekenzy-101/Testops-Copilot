@@ -4,8 +4,8 @@ import logging
 from typing import List
 from app.services.openai_api import OpenAIAPIService
 from app.models import (
-    DefectAnalysisRequest,
-    DefectAnalysisResponse,
+    AnalyzeDefectRequest,
+    AnalyzeDefectResponse,
     DefectHotspot,
     DefectRecord,
 )
@@ -19,7 +19,7 @@ class DefectAnalyzerService:
     def __init__(self, openai_api: OpenAIAPIService):
         self.openai_api = openai_api
 
-    async def analyze(self, request: DefectAnalysisRequest) -> DefectAnalysisResponse:
+    async def analyze(self, request: AnalyzeDefectRequest) -> AnalyzeDefectResponse:
         prompt = self._build_prompt(request.defects, request.requirements)
         system_prompt = (
             "You are a QA lead specializing in risk-based testing. "
@@ -33,7 +33,7 @@ class DefectAnalyzerService:
         )
         hotspots = self._parse_hotspots(analysis)
 
-        return DefectAnalysisResponse(
+        return AnalyzeDefectResponse(
             hotspots=hotspots,
             summary=analysis,
             model_used=self.openai_api.model,

@@ -3,7 +3,7 @@
 import logging
 from typing import List
 from app.services.openai_api import OpenAIAPIService
-from app.models.test_plan import TestPlanRequest, TestPlanResponse
+from app.models.test_plan import GenerateTestPlanRequest, GenerateTestPlanResponse
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,9 @@ class TestPlanGeneratorService:
     def __init__(self, openai_api: OpenAIAPIService):
         self.openai_api = openai_api
 
-    async def generate(self, request: TestPlanRequest) -> TestPlanResponse:
+    async def generate(
+        self, request: GenerateTestPlanRequest
+    ) -> GenerateTestPlanResponse:
         """Generate a test plan using the LLM."""
         prompt = self._build_prompt(request)
         system_prompt = (
@@ -29,13 +31,13 @@ class TestPlanGeneratorService:
         )
         sections = self._extract_sections(plan_text)
 
-        return TestPlanResponse(
+        return GenerateTestPlanResponse(
             plan=plan_text,
             sections=sections,
             model_used=self.openai_api.model,
         )
 
-    def _build_prompt(self, req: TestPlanRequest) -> str:
+    def _build_prompt(self, req: GenerateTestPlanRequest) -> str:
         goals = "\n".join(f"- {g}" for g in req.goals)
         return (
             f"Create a structured test plan.\n\n"

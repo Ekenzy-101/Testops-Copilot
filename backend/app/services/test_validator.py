@@ -4,9 +4,9 @@ import re
 import logging
 from typing import List
 from app.services.openai_api import OpenAIAPIService
-from app.models.test_validation import (
-    ValidationRequest,
-    ValidationReport,
+from app.models import (
+    ValidateTestCaseRequest,
+    ValidateTestCaseResponse,
     ValidationResult,
     ValidationIssue,
     IssueSeverity,
@@ -23,7 +23,9 @@ class TestValidatorService:
     def __init__(self, openai_api: OpenAIAPIService):
         self.openai_api = openai_api
 
-    async def validate_test_cases(self, request: ValidationRequest) -> ValidationReport:
+    async def validate(
+        self, request: ValidateTestCaseRequest
+    ) -> ValidateTestCaseResponse:
         """
         Validate test cases against standards.
 
@@ -49,7 +51,7 @@ class TestValidatorService:
         # Generate summary
         summary = self._generate_summary(results, overall_compliance)
 
-        return ValidationReport(
+        return ValidateTestCaseResponse(
             total_tests=total_count,
             valid_tests=valid_count,
             invalid_tests=total_count - valid_count,

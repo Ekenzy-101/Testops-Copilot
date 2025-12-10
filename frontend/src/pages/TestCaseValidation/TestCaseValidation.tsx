@@ -4,15 +4,16 @@ import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
 import { FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
+import { Checkbox } from "@snack-uikit/toggles";
 import { Typography } from "@snack-uikit/typography";
-import { apiClient } from "../../services/api";
-import { OptimizationRequest } from "../../types/api";
-import { OptimizationResult } from "./OptimizationResult";
-import styles from "./Optimization.module.scss";
+import { apiClient } from "../../services";
+import { ValidateTestCaseRequest } from "../../types";
+import { ValidationResult } from "./TestCaseValidationResult";
+import styles from "./TestCaseValidation.module.scss";
 
-export const Optimization = () => {
+export const TestCaseValidation = () => {
   const [testCases, setTestCases] = useState("");
-  const [requirements, setRequirements] = useState("");
+  const [strictMode, setStrictMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
@@ -25,15 +26,15 @@ export const Optimization = () => {
       const testCasesList = testCases
         .split("\n---\n")
         .filter((tc) => tc.trim());
-      const request: OptimizationRequest = {
+      const request: ValidateTestCaseRequest = {
         test_cases: testCasesList,
-        requirements,
+        strict_mode: strictMode,
       };
 
-      const response = await apiClient.optimizeTestCases(request);
+      const response = await apiClient.validateTestCases(request);
       setResult(response);
     } catch (err: any) {
-      toast.error(err?.message || "Failed to optimize test cases");
+      toast(err?.message || "Failed to validate test cases");
     } finally {
       setLoading(false);
     }
@@ -47,7 +48,7 @@ export const Optimization = () => {
         size="l"
         className={styles.title}
       >
-        Optimize Test Cases
+        Validate Test Cases
       </Typography>
       <Typography
         family="mono"
@@ -55,21 +56,11 @@ export const Optimization = () => {
         size="m"
         className={styles.subtitle}
       >
-        Analyze test coverage, find duplicates, identify gaps, and get
-        optimization suggestions
+        Validate test cases against Allure standards and AAA pattern
       </Typography>
 
       <Card>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <FieldTextArea
-            className={styles.formGroup}
-            label="Requirements"
-            value={requirements}
-            onChange={setRequirements}
-            placeholder="Enter requirements description..."
-            minRows={6}
-            required
-          />
           <FieldTextArea
             className={styles.formGroup}
             label="Test Cases (separate multiple test cases with '---' on a new line)"
@@ -79,9 +70,21 @@ export const Optimization = () => {
             minRows={12}
             required
           />
+          <div className={styles.formGroup}>
+            <label className={styles.checkboxLabel}>
+              <Checkbox
+                checked={strictMode}
+                onChange={setStrictMode}
+                className={styles.checkbox}
+              />
+              <Typography family="mono" purpose="body" size="m">
+                Strict validation mode
+              </Typography>
+            </label>
+          </div>
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Analyzing..." : "Analyze & Optimize"}
+            label={loading ? "Validating..." : "Validate Test Cases"}
             onClick={handleSubmit}
             disabled={loading}
             type="submit"
@@ -95,7 +98,7 @@ export const Optimization = () => {
         </div>
       )}
 
-      {result && <OptimizationResult result={result} />}
+      {result && <ValidationResult result={result} />}
     </div>
   );
 };

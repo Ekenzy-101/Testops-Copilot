@@ -1,20 +1,18 @@
-/** Test case validation page */
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
 import { FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
-import { Checkbox } from "@snack-uikit/toggles";
 import { Typography } from "@snack-uikit/typography";
-import { apiClient } from "../../services/api";
-import { ValidationRequest } from "../../types/api";
-import { ValidationResult } from "./ValidationResult";
-import styles from "./Validation.module.scss";
+import { apiClient } from "../../services";
+import { OptimizeTestCaseRequest } from "../../types";
+import { TestCaseOptimizationResult } from "./TestCaseOptimizationResult";
+import styles from "./TestCaseOptimization.module.scss";
 
-export const Validation = () => {
+export const TestCaseOptimization = () => {
   const [testCases, setTestCases] = useState("");
-  const [strictMode, setStrictMode] = useState(false);
+  const [requirements, setRequirements] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
@@ -27,15 +25,15 @@ export const Validation = () => {
       const testCasesList = testCases
         .split("\n---\n")
         .filter((tc) => tc.trim());
-      const request: ValidationRequest = {
+      const request: OptimizeTestCaseRequest = {
         test_cases: testCasesList,
-        strict_mode: strictMode,
+        requirements,
       };
 
-      const response = await apiClient.validateTestCases(request);
+      const response = await apiClient.optimizeTestCases(request);
       setResult(response);
     } catch (err: any) {
-      toast(err?.message || "Failed to validate test cases");
+      toast.error(err?.message || "Failed to optimize test cases");
     } finally {
       setLoading(false);
     }
@@ -49,7 +47,7 @@ export const Validation = () => {
         size="l"
         className={styles.title}
       >
-        Validate Test Cases
+        Optimize Test Cases
       </Typography>
       <Typography
         family="mono"
@@ -57,11 +55,21 @@ export const Validation = () => {
         size="m"
         className={styles.subtitle}
       >
-        Validate test cases against Allure standards and AAA pattern
+        Analyze test coverage, find duplicates, identify gaps, and get
+        optimization suggestions
       </Typography>
 
       <Card>
         <form onSubmit={handleSubmit} className={styles.form}>
+          <FieldTextArea
+            className={styles.formGroup}
+            label="Requirements"
+            value={requirements}
+            onChange={setRequirements}
+            placeholder="Enter requirements description..."
+            minRows={6}
+            required
+          />
           <FieldTextArea
             className={styles.formGroup}
             label="Test Cases (separate multiple test cases with '---' on a new line)"
@@ -71,21 +79,9 @@ export const Validation = () => {
             minRows={12}
             required
           />
-          <div className={styles.formGroup}>
-            <label className={styles.checkboxLabel}>
-              <Checkbox
-                checked={strictMode}
-                onChange={setStrictMode}
-                className={styles.checkbox}
-              />
-              <Typography family="mono" purpose="body" size="m">
-                Strict validation mode
-              </Typography>
-            </label>
-          </div>
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Validating..." : "Validate Test Cases"}
+            label={loading ? "Analyzing..." : "Analyze & Optimize"}
             onClick={handleSubmit}
             disabled={loading}
             type="submit"
@@ -99,7 +95,7 @@ export const Validation = () => {
         </div>
       )}
 
-      {result && <ValidationResult result={result} />}
+      {result && <TestCaseOptimizationResult result={result} />}
     </div>
   );
 };

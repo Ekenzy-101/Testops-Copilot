@@ -1,30 +1,51 @@
 import { PropsWithChildren, useState } from "react";
-import { MdMenu } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
+import { MdDarkMode, MdLightMode, MdMenu } from "react-icons/md";
+import { Link, useLocation } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Drawer } from "@snack-uikit/drawer";
 import { useTheme, Theme } from "../../theme/ThemeProvider";
 import styles from "./Layout.module.scss";
+import {
+  APP_NAME,
+  TO_ANALYZE_DEFECT,
+  TO_COMMIT_TEST_CASE,
+  TO_GENERATE_AUTO_TEST_CASE,
+  TO_GENERATE_MANUAL_TEST_CASE,
+  TO_GENERATE_TEST_PLAN,
+  TO_OPTIMIZE_TEST_CASE,
+  TO_VALIDATE_TEST_CASE,
+} from "../../utils";
+
+const navItems = [
+  { path: TO_ANALYZE_DEFECT, label: "Analyze" },
+  { path: TO_COMMIT_TEST_CASE, label: "Commit" },
+  { path: TO_GENERATE_AUTO_TEST_CASE, label: "Generate Auto" },
+  { path: TO_GENERATE_MANUAL_TEST_CASE, label: "Generate Manual" },
+  { path: TO_GENERATE_TEST_PLAN, label: "Generate Plan" },
+  { path: TO_OPTIMIZE_TEST_CASE, label: "Optimize" },
+  { path: TO_VALIDATE_TEST_CASE, label: "Validate" },
+];
 
 export const Layout = ({ children }: PropsWithChildren) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const { theme, changeTheme } = useTheme();
 
-  const navItems = [
-    { path: "/", label: "Test Case Generation" },
-    { path: "/automated-tests", label: "Automated Tests" },
-    { path: "/optimization", label: "Optimization" },
-    { path: "/validation", label: "Validation" },
-    { path: "/gitlab", label: "GitLab Commit" },
-    { path: "/test-plan", label: "Test Plan" },
-    { path: "/defects", label: "Defect Insights" },
-  ];
+  const getNavLinkClassName = (path: string) => {
+    if (path == TO_GENERATE_MANUAL_TEST_CASE && location.pathname == "/") {
+      return `${styles.navLink} ${styles.navLinkActive}`;
+    }
+
+    return `${styles.navLink} ${
+      location.pathname === path ? styles.navLinkActive : ""
+    }`;
+  };
 
   const logoElement = (
-    <img src="/logo.png" alt="Kenzy QA Copilot" className={styles.logo} />
+    <img src="/logo.png" alt={APP_NAME} className={styles.logo} />
   );
+
   const navElement = (
     <nav className={styles.nav}>
       {logoElement}
@@ -32,20 +53,24 @@ export const Layout = ({ children }: PropsWithChildren) => {
         <Link
           key={item.path}
           to={item.path}
-          className={`${styles.navLink} ${
-            location.pathname === item.path ? styles.navLinkActive : ""
-          }`}
+          className={getNavLinkClassName(item.path)}
         >
           {item.label}
         </Link>
       ))}
       <ButtonFilled
         className={styles.themeToggle}
-        label={theme === Theme.light ? "🌙" : "☀️"}
+        icon={
+          theme === Theme.light ? (
+            <MdLightMode size={50} />
+          ) : (
+            <MdDarkMode size={50} />
+          )
+        }
         onClick={() =>
           changeTheme(theme === Theme.light ? Theme.dark : Theme.light)
         }
-        size="s"
+        size="m"
       />
     </nav>
   );

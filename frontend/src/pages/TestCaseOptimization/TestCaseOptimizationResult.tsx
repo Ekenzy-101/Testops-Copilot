@@ -1,14 +1,16 @@
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
-import { OptimizationReport } from "../../types/api";
-import styles from "./OptimizationResult.module.scss";
+import { OptimizeTestCaseResponse } from "../../types";
+import styles from "./TestCaseOptimizationResult.module.scss";
 import { getClassNameByPercentage, getClassNameBySeverity } from "../../utils";
 
 interface OptimizationResultProps {
-  result: OptimizationReport;
+  result: OptimizeTestCaseResponse;
 }
 
-export const OptimizationResult = ({ result }: OptimizationResultProps) => {
+export const TestCaseOptimizationResult = ({
+  result,
+}: OptimizationResultProps) => {
   const {
     coverage_analysis,
     duplicates,

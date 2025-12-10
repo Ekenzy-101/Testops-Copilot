@@ -63,7 +63,7 @@ src/
 │   └── Layout/      # Main layout and navigation
 ├── pages/           # Page components
 │   ├── TestCaseGeneration/  # Test case generation page
-│   ├── AutomatedTests/       # Automated test generation page
+│   ├── AutoTestCaseGeneration/       # Automated test generation page
 │   ├── Optimization/         # Test optimization page
 │   └── Validation/            # Test validation page
 ├── services/        # API client

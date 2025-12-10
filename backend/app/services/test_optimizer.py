@@ -1,16 +1,18 @@
 """Test case optimization service."""
 
+import json
 import logging
 import re
-from typing import List, Dict, Set
+from typing import List
 from app.services.openai_api import OpenAIAPIService
-from app.models.test_optimization import (
+from app.models import (
     CoverageAnalysis,
-    DuplicateTest,
     CoverageGap,
-    OptimizationSuggestion,
-    OptimizationReport,
+    DuplicateTest,
     GapSeverity,
+    OptimizationSuggestion,
+    OptimizeTestCaseRequest,
+    OptimizeTestCaseResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -157,7 +159,6 @@ Provide a JSON response with duplicate pairs:
             )
 
             # Parse JSON response
-            import json
 
             try:
                 json_match = re.search(r"\{.*\}", response, re.DOTALL)
@@ -217,7 +218,6 @@ Provide a JSON response with coverage gaps:
 }}"""
 
             system_prompt = """You are an expert QA analyst. Identify critical coverage gaps and suggest improvements."""
-
             response = await self.openai_api.generate(
                 prompt=prompt,
                 system_prompt=system_prompt,
@@ -226,8 +226,6 @@ Provide a JSON response with coverage gaps:
             )
 
             # Parse JSON response
-            import json
-
             try:
                 json_match = re.search(r"\{.*\}", response, re.DOTALL)
                 if json_match:
@@ -246,19 +244,19 @@ Provide a JSON response with coverage gaps:
 
         return gaps
 
-    async def generate_optimization_report(
-        self, test_cases: List[str], requirements: str
-    ) -> OptimizationReport:
+    async def optimize(
+        self, request: OptimizeTestCaseRequest
+    ) -> OptimizeTestCaseResponse:
         """
         Generate complete optimization report.
 
         Args:
-            test_cases: List of test case code strings
-            requirements: Requirements description
+            request: Test case optimization request
 
         Returns:
-            Complete optimization report
+            Test case optimization response
         """
+        test_cases, requirements = request.test_cases, request.requirements
         # Analyze coverage
         coverage_analysis = await self.analyze_coverage(test_cases, requirements)
 
@@ -277,7 +275,7 @@ Provide a JSON response with coverage gaps:
         outdated_tests = await self._identify_outdated_tests(test_cases, requirements)
         conflicting_tests = await self._identify_conflicting_tests(test_cases)
 
-        return OptimizationReport(
+        return OptimizeTestCaseResponse(
             coverage_analysis=coverage_analysis,
             duplicates=duplicates,
             coverage_gaps=gaps,
@@ -439,9 +437,6 @@ Return JSON with outdated test IDs:
             response = await self.openai_api.generate(
                 prompt=prompt, temperature=0.3, max_tokens=500
             )
-
-            import json
-
             json_match = re.search(r"\{.*\}", response, re.DOTALL)
             if json_match:
                 data = json.loads(json_match.group(0))
@@ -469,8 +464,7 @@ Return JSON with conflicting test IDs:
                 prompt=prompt, temperature=0.3, max_tokens=500
             )
 
-            import json
-
+            # Parse JSON response
             json_match = re.search(r"\{.*\}", response, re.DOTALL)
             if json_match:
                 data = json.loads(json_match.group(0))

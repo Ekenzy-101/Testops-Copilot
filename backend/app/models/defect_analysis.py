@@ -16,7 +16,16 @@ class DefectRecord(BaseModel):
     description: Optional[str] = Field(None, description="Detailed description")
 
 
-class DefectAnalysisRequest(BaseModel):
+class DefectHotspot(BaseModel):
+    """Identified hotspot or risk area."""
+
+    area: str
+    risk: str
+    recommendation: str
+    priority: str
+
+
+class AnalyzeDefectRequest(BaseModel):
     """Request for analyzing historical defects."""
 
     defects: List[DefectRecord] = Field(
@@ -27,16 +36,7 @@ class DefectAnalysisRequest(BaseModel):
     )
 
 
-class DefectHotspot(BaseModel):
-    """Identified hotspot or risk area."""
-
-    area: str
-    risk: str
-    recommendation: str
-    priority: str
-
-
-class DefectAnalysisResponse(BaseModel):
+class AnalyzeDefectResponse(BaseModel):
     """Response with hotspot insights and recommendations."""
 
     hotspots: List[DefectHotspot] = Field(
@@ -44,4 +44,3 @@ class DefectAnalysisResponse(BaseModel):
     )
     summary: str = Field(..., description="Summary of findings")
     model_used: str = Field(..., description="LLM model used")
-

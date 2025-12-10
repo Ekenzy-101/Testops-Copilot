@@ -1,16 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router";
 import { ThemeProvider } from "./theme/ThemeProvider";
 import { Layout } from "./components";
 import {
-  AutomatedTests,
-  Optimization,
-  TestCaseGeneration,
-  Validation,
-  GitLabCommit,
-  TestPlan,
-  DefectInsights,
+  AutoTestCaseGeneration,
+  ManualTestCaseGeneration,
+  TestCaseCommit,
+  TestPlanGeneration,
+  TestCaseOptimization,
+  TestCaseValidation,
+  DefectAnalysis,
 } from "./pages";
 import "./App.scss";
+import {
+  TO_ANALYZE_DEFECT,
+  TO_COMMIT_TEST_CASE,
+  TO_GENERATE_AUTO_TEST_CASE,
+  TO_GENERATE_MANUAL_TEST_CASE,
+  TO_GENERATE_TEST_PLAN,
+  TO_OPTIMIZE_TEST_CASE,
+  TO_VALIDATE_TEST_CASE,
+} from "./utils";
 
 const App = () => {
   return (
@@ -18,13 +27,29 @@ const App = () => {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<TestCaseGeneration />} />
-            <Route path="/automated-tests" element={<AutomatedTests />} />
-            <Route path="/optimization" element={<Optimization />} />
-            <Route path="/validation" element={<Validation />} />
-            <Route path="/gitlab" element={<GitLabCommit />} />
-            <Route path="/test-plan" element={<TestPlan />} />
-            <Route path="/defects" element={<DefectInsights />} />
+            <Route path={TO_ANALYZE_DEFECT} element={<DefectAnalysis />} />
+            <Route path={TO_COMMIT_TEST_CASE} element={<TestCaseCommit />} />
+            <Route
+              path={TO_GENERATE_MANUAL_TEST_CASE}
+              element={<ManualTestCaseGeneration />}
+            />
+            <Route
+              path={TO_GENERATE_AUTO_TEST_CASE}
+              element={<AutoTestCaseGeneration />}
+            />
+            <Route
+              path={TO_GENERATE_TEST_PLAN}
+              element={<TestPlanGeneration />}
+            />
+            <Route
+              path={TO_OPTIMIZE_TEST_CASE}
+              element={<TestCaseOptimization />}
+            />
+            <Route
+              path={TO_VALIDATE_TEST_CASE}
+              element={<TestCaseValidation />}
+            />
+            <Route path={"*"} element={<ManualTestCaseGeneration />} />
           </Routes>
         </Layout>
       </BrowserRouter>
