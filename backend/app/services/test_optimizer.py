@@ -69,9 +69,7 @@ Provide a JSON response with:
     "covered_areas": [<list of covered functionality>],
     "uncovered_areas": [<list of uncovered functionality>]
 }}"""
-
             system_prompt = """You are an expert QA analyst. Analyze test coverage comprehensively and identify gaps."""
-
             response = await self.openai_api.generate(
                 prompt=prompt,
                 system_prompt=system_prompt,
@@ -148,9 +146,7 @@ Provide a JSON response with duplicate pairs:
         }}
     ]
 }}"""
-
             system_prompt = """You are an expert QA analyst. Identify duplicate test cases accurately."""
-
             response = await self.openai_api.generate(
                 prompt=prompt,
                 system_prompt=system_prompt,
@@ -159,7 +155,6 @@ Provide a JSON response with duplicate pairs:
             )
 
             # Parse JSON response
-
             try:
                 json_match = re.search(r"\{.*\}", response, re.DOTALL)
                 if json_match:
@@ -195,7 +190,6 @@ Provide a JSON response with duplicate pairs:
             List of coverage gaps
         """
         gaps = []
-
         try:
             prompt = f"""Identify test coverage gaps based on requirements and current test coverage.
 

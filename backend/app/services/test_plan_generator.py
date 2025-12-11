@@ -26,13 +26,13 @@ class TestPlanGeneratorService:
             "Produce concise, actionable test plans with clear sections and priorities."
         )
 
-        plan_text = await self.openai_api.generate(
+        plan = await self.openai_api.generate(
             prompt=prompt, system_prompt=system_prompt, temperature=0.4, max_tokens=1800
         )
-        sections = self._extract_sections(plan_text)
+        sections = self._extract_sections(plan)
 
         return GenerateTestPlanResponse(
-            plan=plan_text,
+            plan=plan,
             sections=sections,
             model_used=self.openai_api.model,
         )
@@ -53,9 +53,9 @@ class TestPlanGeneratorService:
             "Use bullets where helpful. Keep it concise."
         )
 
-    def _extract_sections(self, plan_text: str) -> List[str]:
+    def _extract_sections(self, plan: str) -> List[str]:
         sections: List[str] = []
-        for line in plan_text.splitlines():
+        for line in plan.splitlines():
             if line.strip().endswith(":"):
                 sections.append(line.strip(":").strip())
         return sections or ["Objectives", "Scope", "Approach"]

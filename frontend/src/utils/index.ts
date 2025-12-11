@@ -34,7 +34,7 @@ export function extractContentInMarkdown(content: string): string {
 export function wrapContentInMarkdown(content: string): string {
   if (!content) return "```\n```";
 
-  let trimmed = content.trim();
+  const trimmed = content.trim();
   if (trimmed.startsWith("```") && trimmed.endsWith("```")) {
     return trimmed;
   }
@@ -42,6 +42,13 @@ export function wrapContentInMarkdown(content: string): string {
   try {
     const parsed = JSON.parse(trimmed);
     return "```json\n" + `${JSON.stringify(parsed, null, 2)}` + "\n```";
+  } catch {}
+
+  try {
+    const parsed = yaml.load(trimmed);
+    if (parsed !== undefined && parsed !== null) {
+      return "```yaml\n" + `${yaml.dump(parsed)}` + "\n```";
+    }
   } catch {}
 
   const pythonPatterns = [
@@ -59,13 +66,6 @@ export function wrapContentInMarkdown(content: string): string {
   if (pythonPatterns.some((re) => re.test(trimmed))) {
     return "```python\n" + `${trimmed}` + "\n```";
   }
-
-  try {
-    const parsed = yaml.load(trimmed);
-    if (parsed !== undefined && parsed !== null) {
-      return "```yaml\n" + `${yaml.dump(parsed)}` + "\n```";
-    }
-  } catch {}
 
   return "```\n" + `${trimmed}` + "\n```";
 }
