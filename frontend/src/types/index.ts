@@ -1,5 +1,3 @@
-/** API types matching backend models */
-
 export enum Priority {
   CRITICAL = "CRITICAL",
   NORMAL = "NORMAL",

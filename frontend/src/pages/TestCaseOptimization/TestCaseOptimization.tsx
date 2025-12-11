@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
@@ -15,6 +16,7 @@ export const TestCaseOptimization = () => {
   const [requirements, setRequirements] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +34,9 @@ export const TestCaseOptimization = () => {
 
       const response = await apiClient.optimizeTestCases(request);
       setResult(response);
+      toast.success(t("test_case_optimization.result.success"));
     } catch (err: any) {
-      toast.error(err?.message || "Failed to optimize test cases");
+      toast.error(err?.message || t("test_case_optimization.result.error"));
     } finally {
       setLoading(false);
     }
@@ -47,41 +50,39 @@ export const TestCaseOptimization = () => {
         size="l"
         className={styles.title}
       >
-        Optimize Test Cases
+        {t("test_case_optimization.title")}
       </Typography>
-      <Typography
-        family="mono"
-        purpose="body"
-        size="m"
-        className={styles.subtitle}
-      >
-        Analyze test coverage, find duplicates, identify gaps, and get
-        optimization suggestions
+      <Typography family="mono" purpose="body" size="m">
+        {t("test_case_optimization.subtitle")}
       </Typography>
 
       <Card>
         <form onSubmit={handleSubmit} className={styles.form}>
           <FieldTextArea
             className={styles.formGroup}
-            label="Requirements"
+            label={t("test_case_optimization.requirements.label")}
+            placeholder={t("test_case_optimization.requirements.placeholder")}
             value={requirements}
             onChange={setRequirements}
-            placeholder="Enter requirements description..."
             minRows={6}
             required
           />
           <FieldTextArea
             className={styles.formGroup}
-            label="Test Cases (separate multiple test cases with '---' on a new line)"
+            label={t("test_case_optimization.test_cases.label")}
+            placeholder={t("test_case_optimization.test_cases.placeholder")}
             value={testCases}
             onChange={setTestCases}
-            placeholder="Paste test case code...&#10;&#10;---&#10;&#10;Paste another test case..."
             minRows={12}
             required
           />
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Analyzing..." : "Analyze & Optimize"}
+            label={
+              loading
+                ? t("test_case_optimization.btn.label_loading")
+                : t("test_case_optimization.btn.label")
+            }
             onClick={handleSubmit}
             disabled={loading}
             type="submit"

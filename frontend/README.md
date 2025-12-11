@@ -1,5 +1,8 @@
 # Kenzy QA Copilot - Frontend
 
+- [English](README.md)
+- [Русский](README.ru.md)
+
 React 19 + Snack UIKit UI for the QA copilot.
 
 ## Features
@@ -35,8 +38,8 @@ React 19 + Snack UIKit UI for the QA copilot.
 
 ```
 src/
-├── components/            # Reusable UI (e.g., Layout)
-├── pages/                 # Feature pages (Manual/Auto Generation, Optimization, Validation)
+├── components/            # Reusable UI Components (e.g., Layout)
+├── pages/                 # Feature pages
 ├── services/              # API client helpers
 ├── utilities/             # Shared utils/constants
 ├── theme/                 # Theme provider and Snack UIKit setup

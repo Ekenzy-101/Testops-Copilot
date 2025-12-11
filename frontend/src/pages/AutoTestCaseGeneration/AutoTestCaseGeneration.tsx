@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import {
@@ -8,18 +9,25 @@ import {
   FieldSecure,
 } from "@snack-uikit/fields";
 import { Card } from "@snack-uikit/card";
+import { Spinner } from "@snack-uikit/loaders";
+import { MarkdownEditor } from "@snack-uikit/markdown";
 import { Tabs } from "@snack-uikit/tabs";
 import { Typography } from "@snack-uikit/typography";
-import { Spinner } from "@snack-uikit/loaders";
+import { AutoTestCaseGenerationResult } from "./AutoTestCaseGenerationResult";
 import { apiClient } from "../../services";
 import { GenerateAutoTestCaseRequest } from "../../types";
-import { AutoTestCaseGenerationResult } from "./AutoTestCaseGenerationResult";
+import {
+  copyToClipboard,
+  extractContentInMarkdown,
+  wrapContentInMarkdown,
+} from "../../utils";
 import styles from "./AutoTestCaseGeneration.module.scss";
 
 export const AutoTestCaseGeneration = () => {
   const [testType, setTestType] = useState<"UI" | "API">("UI");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const { t, i18n } = useTranslation();
 
   // UI Test State
   const [uiRequirements, setUiRequirements] = useState("");
@@ -58,7 +66,7 @@ export const AutoTestCaseGeneration = () => {
         request = {
           test_type: "API",
           api_request: {
-            openapi_spec: openApiSpec,
+            openapi_spec: extractContentInMarkdown(openApiSpec),
             base_url: apiBaseUrl,
             auth_token: authToken || undefined,
             test_cases: apiTestCases
@@ -71,10 +79,11 @@ export const AutoTestCaseGeneration = () => {
         };
       }
 
-      const response = await apiClient.generateAutoTestCaseGeneration(request);
+      const response = await apiClient.generateAutoTestCase(request);
       setResult(response);
+      toast.success(t("auto_test_case_generation.result.success"));
     } catch (err: any) {
-      toast(err?.message || "Failed to generate automated tests");
+      toast.error(err?.message || t("auto_test_case_generation.result.error"));
     } finally {
       setLoading(false);
     }
@@ -88,15 +97,10 @@ export const AutoTestCaseGeneration = () => {
         size="l"
         className={styles.title}
       >
-        Generate Automated Tests
+        {t("auto_test_case_generation.title")}
       </Typography>
-      <Typography
-        family="mono"
-        purpose="body"
-        size="m"
-        className={styles.subtitle}
-      >
-        Generate e2e UI or API tests from test cases and specifications
+      <Typography family="mono" purpose="body" size="m">
+        {t("auto_test_case_generation.subtitle")}
       </Typography>
 
       <Card>
@@ -110,27 +114,30 @@ export const AutoTestCaseGeneration = () => {
               <Tabs.Tab value="UI" label="UI E2E Tests" />
               <Tabs.Tab value="API" label="API Tests" />
             </Tabs.TabBar>
-
             <Tabs.TabContent className={styles.form} value="UI">
               <FieldTextArea
-                label="UI Requirements"
+                label={t("auto_test_case_generation.ui.requirements.label")}
+                placeholder={t(
+                  "auto_test_case_generation.ui.requirements.placeholder",
+                )}
                 value={uiRequirements}
                 onChange={setUiRequirements}
-                placeholder="Enter UI requirements..."
                 minRows={4}
                 required
               />
               <FieldTextArea
-                label="Test Cases (one per line)"
+                label={t("auto_test_case_generation.ui.test_cases.label")}
+                placeholder={t(
+                  "auto_test_case_generation.ui.test_cases.placeholder",
+                )}
                 value={uiTestCases}
                 onChange={setUiTestCases}
-                placeholder="Paste test case code, one per line..."
                 minRows={6}
                 required
               />
               <div className={styles.formRow}>
                 <FieldSelect
-                  label="Framework"
+                  label={t("auto_test_case_generation.ui.framework.label")}
                   value={uiFramework}
                   onChange={(value: string) =>
                     setUiFramework(value as typeof uiFramework)
@@ -143,21 +150,34 @@ export const AutoTestCaseGeneration = () => {
                 />
                 <FieldText
                   inputMode="text"
-                  label="Browser"
+                  label={t("auto_test_case_generation.ui.browser.label")}
+                  placeholder={t(
+                    "auto_test_case_generation.ui.browser.placeholder",
+                  )}
                   onChange={setBrowser}
-                  placeholder="e.g., chrome, firefox"
                   value={browser}
                 />
               </div>
             </Tabs.TabContent>
 
             <Tabs.TabContent className={styles.form} value="API">
-              <FieldTextArea
-                className={styles.formGroup}
-                label="OpenAPI Specification (YAML/JSON)"
-                minRows={8}
-                onChange={setOpenApiSpec}
-                placeholder="Paste OpenAPI 3.0 specification..."
+              <MarkdownEditor
+                className={styles.code}
+                defaultMode="edit"
+                label={t("auto_test_case_generation.api.spec.label")}
+                placeholder={t(
+                  "auto_test_case_generation.api.spec.placeholder",
+                )}
+                onChange={(value: string) =>
+                  setOpenApiSpec(wrapContentInMarkdown(value))
+                }
+                onCodeCopyClick={() =>
+                  copyToClipboard(
+                    extractContentInMarkdown(openApiSpec),
+                    i18n.language,
+                  )
+                }
+                resizable
                 required
                 value={openApiSpec}
               />
@@ -165,40 +185,52 @@ export const AutoTestCaseGeneration = () => {
                 <FieldText
                   className={styles.formGroup}
                   inputMode="text"
-                  label="Base URL"
+                  label={t("auto_test_case_generation.api.base_url.label")}
+                  placeholder={t(
+                    "auto_test_case_generation.api.base_url.placeholder",
+                  )}
                   value={apiBaseUrl}
                   onChange={setApiBaseUrl}
-                  placeholder="https://api.example.com"
                   required
                 />
                 <FieldSecure
                   className={styles.formGroup}
-                  label="Auth Token"
+                  label={t("auto_test_case_generation.api.auth_token.label")}
+                  placeholder={t(
+                    "auto_test_case_generation.api.auth_token.placeholder",
+                  )}
                   onChange={setAuthToken}
-                  placeholder="Bearer token"
                   value={authToken}
                 />
               </div>
               <FieldTextArea
                 className={styles.formGroup}
-                label="Test Cases (optional, one per line)"
+                label={t("auto_test_case_generation.api.test_cases.label")}
+                placeholder={t(
+                  "auto_test_case_generation.api.test_cases.placeholder",
+                )}
                 minRows={4}
                 onChange={setApiTestCases}
-                placeholder="Paste test case code..."
                 value={apiTestCases}
               />
               <FieldText
                 className={styles.formGroup}
                 inputMode="text"
-                label="Endpoints (comma-separated, optional)"
+                label={t("auto_test_case_generation.api.endpoints.label")}
+                placeholder={t(
+                  "auto_test_case_generation.api.endpoints.placeholder",
+                )}
                 value={endpoints}
                 onChange={setEndpoints}
-                placeholder="/api/v1/users, /api/v1/posts"
               />
             </Tabs.TabContent>
             <ButtonFilled
               className={styles.actions}
-              label={loading ? "Generating..." : "Generate Tests"}
+              label={
+                loading
+                  ? t("auto_test_case_generation.btn.label_loading")
+                  : t("auto_test_case_generation.btn.label")
+              }
               onClick={handleSubmit}
               disabled={loading}
               type="submit"

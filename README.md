@@ -1,5 +1,8 @@
 # Kenzy QA Copilot Monorepo
 
+- [English](README.md)
+- [Русский](README.ru.md)
+
 Full-stack AI-powered QA assistant with a React frontend and FastAPI backend.
 
 - Frontend: `frontend/` — React 19 + Rsbuild + Snack UIKit UI.
@@ -28,5 +31,5 @@ Prerequisites: Node.js 22+ with npm, Python 3.13+, and OpenAI-compatible API acc
 
 ## Documentation
 
-- Frontend guide: `frontend/README.md`
-- Backend guide: `backend/README.md`
+- [Frontend Guide](frontend/README.md)
+- [Backend Guide](backend/README.md)

@@ -58,17 +58,21 @@
   gap: 8px;
   margin-top: 8px;
   padding: 16px;
+
+  span:first-child {
+    margin: 4px 0 8px;
+  }
 }
 
-.plan {
-  background: vars.$sys-neutral-background;
-  padding: 12px;
-  border-radius: 6px;
-  white-space: pre-wrap;
-  overflow: auto;
-  font-family: monospace;
-}
+.code {
+  display: flex;
+  flex-direction: column;
+  background: vars.$sys-neutral-background1-level;
+  border-radius: 4px;
+  font-size: 12px;
 
-.sections {
-  margin: 4px 0 8px;
+  pre,
+  section {
+    min-height: 400px;
+  }
 }

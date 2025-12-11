@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
@@ -12,13 +13,14 @@ import styles from "./TestCaseCommit.module.scss";
 export const TestCaseCommit = () => {
   const [form, setForm] = useState<CommitTestCaseRequest>({
     project_id: "",
-    branch: "main",
-    file_path: "tests/generated/test_cases.py",
+    branch: "",
+    file_path: "",
     content: "",
-    commit_message: "Add generated test cases",
+    commit_message: "",
   });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CommitTestCaseResponse | null>(null);
+  const { t } = useTranslation();
 
   const handleChange = (field: keyof CommitTestCaseRequest, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -31,9 +33,9 @@ export const TestCaseCommit = () => {
     try {
       const res = await apiClient.commitTestCases(form);
       setResult(res);
-      toast.success("Committed to GitLab");
+      toast.success(t("test_case_commit.result.success"));
     } catch (err: any) {
-      toast.error(err?.message || "Failed to commit to Gitlab");
+      toast.error(err?.message || t("test_case_commit.result.error"));
     } finally {
       setLoading(false);
     }
@@ -47,10 +49,10 @@ export const TestCaseCommit = () => {
         size="l"
         className={styles.title}
       >
-        Commit Generated Tests to GitLab
+        {t("test_case_commit.title")}
       </Typography>
       <Typography family="mono" purpose="body" size="m">
-        Push generated test artifacts to your repository.
+        {t("test_case_commit.subtitle")}
       </Typography>
 
       <Card>
@@ -58,47 +60,52 @@ export const TestCaseCommit = () => {
           <div className={styles.formRow}>
             <FieldText
               inputMode="text"
-              label="Branch"
+              label={t("test_case_commit.branch.label")}
               value={form.branch}
               onChange={(v) => handleChange("branch", v)}
-              placeholder="main"
+              placeholder={t("test_case_commit.branch.placeholder")}
               required
             />
             <FieldText
               inputMode="text"
-              label="Project ID / Path"
+              label={t("test_case_commit.project_id.label")}
               value={form.project_id}
               onChange={(v) => handleChange("project_id", v)}
-              placeholder="group/project"
+              placeholder={t("test_case_commit.project_id.placeholder")}
               required
             />
           </div>
           <FieldText
             inputMode="text"
-            label="File Path"
+            label={t("test_case_commit.file_path.label")}
             value={form.file_path}
             onChange={(v) => handleChange("file_path", v)}
-            placeholder="tests/generated/test_cases.py"
+            placeholder={t("test_case_commit.file_path.placeholder")}
             required
           />
           <FieldTextArea
-            label="Commit Message"
+            label={t("test_case_commit.commit_message.label")}
             value={form.commit_message}
             onChange={(v) => handleChange("commit_message", v)}
+            placeholder={t("test_case_commit.commit_message.placeholder")}
             minRows={2}
             required
           />
           <FieldTextArea
-            label="Content"
+            label={t("test_case_commit.content.label")}
+            placeholder={t("test_case_commit.content.placeholder")}
             value={form.content}
             onChange={(v) => handleChange("content", v)}
-            placeholder="# paste generated tests"
             minRows={10}
             required
           />
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Committing..." : "Commit to GitLab"}
+            label={
+              loading
+                ? t("test_case_commit.btn.label_loading")
+                : t("test_case_commit.btn.label")
+            }
             onClick={handleSubmit}
             disabled={loading}
             type="submit"
@@ -115,17 +122,18 @@ export const TestCaseCommit = () => {
       {result && (
         <div className={styles.result}>
           <Typography family="mono" purpose="title" size="m">
-            Commit Result
+            {t("test_case_commit.result.title")}
           </Typography>
           <Typography family="mono" purpose="body" size="s">
-            Status: {result.status}
+            {t("test_case_commit.result.status")} {result.status}
           </Typography>
           <Typography family="mono" purpose="body" size="s">
-            File: {result.file_path} ({result.branch})
+            {t("test_case_commit.result.file_path")} {result.file_path} (
+            {result.branch})
           </Typography>
           {result.commit_id && (
             <Typography family="mono" purpose="body" size="s">
-              Commit: {result.commit_id}
+              {t("test_case_commit.result.commit_id")} {result.commit_id}
             </Typography>
           )}
         </div>

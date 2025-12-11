@@ -1,8 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { OptimizeTestCaseResponse } from "../../types";
-import styles from "./TestCaseOptimizationResult.module.scss";
 import { getClassNameByPercentage, getClassNameBySeverity } from "../../utils";
+import styles from "./TestCaseOptimizationResult.module.scss";
 
 interface OptimizationResultProps {
   result: OptimizeTestCaseResponse;
@@ -19,6 +20,7 @@ export const TestCaseOptimizationResult = ({
     outdated_tests,
     conflicting_tests,
   } = result;
+  const { t } = useTranslation();
 
   return (
     <div className={styles.container}>
@@ -29,13 +31,15 @@ export const TestCaseOptimizationResult = ({
           size="m"
           className={styles.sectionTitle}
         >
-          Coverage Analysis
+          {t("test_case_optimization.result.coverage_analysis.title")}
         </Typography>
 
         <div className={styles.coverageStats}>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Total Functionality
+              {t(
+                "test_case_optimization.result.coverage_analysis.total_functionality",
+              )}
             </Typography>
             <Typography family="mono" purpose="title" size="m">
               {coverage_analysis.total_functionality}
@@ -43,7 +47,9 @@ export const TestCaseOptimizationResult = ({
           </div>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Covered
+              {t(
+                "test_case_optimization.result.coverage_analysis.covered_functionality",
+              )}
             </Typography>
             <Typography family="mono" purpose="title" size="m">
               {coverage_analysis.covered_functionality}
@@ -51,7 +57,9 @@ export const TestCaseOptimizationResult = ({
           </div>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Coverage
+              {t(
+                "test_case_optimization.result.coverage_analysis.coverage_percentage",
+              )}
             </Typography>
             <Typography
               className={getClassNameByPercentage(
@@ -75,7 +83,9 @@ export const TestCaseOptimizationResult = ({
               size="m"
               className={styles.label}
             >
-              Uncovered Areas:
+              {t(
+                "test_case_optimization.result.coverage_analysis.uncovered_areas",
+              )}
             </Typography>
             <ul className={styles.list}>
               {coverage_analysis.uncovered_areas.map((area, index) => (
@@ -94,18 +104,24 @@ export const TestCaseOptimizationResult = ({
             size="m"
             className={styles.sectionTitle}
           >
-            Duplicate Tests ({duplicates.length})
+            {t("test_case_optimization.result.duplicates.title")} (
+            {duplicates.length})
           </Typography>
           {duplicates.map((dup, index) => (
             <div key={index} className={styles.duplicate}>
               <Typography family="mono" purpose="body" size="m">
-                Test {dup.test_id_1} ↔ Test {dup.test_id_2}
+                {t("test_case_optimization.result.duplicates.test_id")}{" "}
+                {dup.test_id_1} ↔{" "}
+                {t("test_case_optimization.result.duplicates.test_id")}{" "}
+                {dup.test_id_2}
               </Typography>
               <Typography family="mono" purpose="body" size="s">
-                Similarity: {(dup.similarity_score * 100).toFixed(1)}%
+                {t("test_case_optimization.result.duplicates.similarity_score")}{" "}
+                {(dup.similarity_score * 100).toFixed(1)}%
               </Typography>
               <Typography family="mono" purpose="body" size="s">
-                Reason: {dup.reason}
+                {t("test_case_optimization.result.duplicates.reason")}{" "}
+                {dup.reason}
               </Typography>
               <Typography
                 family="mono"
@@ -113,7 +129,8 @@ export const TestCaseOptimizationResult = ({
                 size="s"
                 className={styles.recommendation}
               >
-                Recommendation: {dup.recommendation}
+                {t("test_case_optimization.result.duplicates.recommendation")}{" "}
+                {dup.recommendation}
               </Typography>
             </div>
           ))}
@@ -128,7 +145,8 @@ export const TestCaseOptimizationResult = ({
             size="m"
             className={styles.sectionTitle}
           >
-            Coverage Gaps ({coverage_gaps.length})
+            {t("test_case_optimization.result.coverage_gaps.title")} (
+            {coverage_gaps.length})
           </Typography>
           {coverage_gaps.map((gap, index) => (
             <div key={index} className={styles.gap}>
@@ -156,7 +174,9 @@ export const TestCaseOptimizationResult = ({
                     size="s"
                     className={styles.label}
                   >
-                    Suggested Tests:
+                    {t(
+                      "test_case_optimization.result.coverage_gaps.suggested_tests",
+                    )}
                   </Typography>
                   <ul className={styles.list}>
                     {gap.suggested_tests.map((test, i) => (
@@ -178,7 +198,8 @@ export const TestCaseOptimizationResult = ({
             size="m"
             className={styles.sectionTitle}
           >
-            Optimization Suggestions ({suggestions.length})
+            {t("test_case_optimization.result.suggestions.title")} (
+            {suggestions.length})
           </Typography>
           {suggestions.map((suggestion, index) => (
             <div key={index} className={styles.suggestion}>
@@ -187,10 +208,12 @@ export const TestCaseOptimizationResult = ({
               </Typography>
               <div className={styles.suggestionMeta}>
                 <Typography family="mono" purpose="body" size="s">
-                  Impact: {suggestion.impact}
+                  {t("test_case_optimization.result.suggestions.impact")}{" "}
+                  {suggestion.impact}
                 </Typography>
                 <Typography family="mono" purpose="body" size="s">
-                  Effort: {suggestion.effort}
+                  {t("test_case_optimization.result.suggestions.effort")}{" "}
+                  {suggestion.effort}
                 </Typography>
               </div>
             </div>
@@ -206,7 +229,7 @@ export const TestCaseOptimizationResult = ({
             size="m"
             className={styles.sectionTitle}
           >
-            Issues
+            {t("test_case_optimization.result.issues.title")}
           </Typography>
           {outdated_tests.length > 0 && (
             <div className={styles.issueSection}>
@@ -216,7 +239,7 @@ export const TestCaseOptimizationResult = ({
                 size="m"
                 className={styles.label}
               >
-                Outdated Tests:
+                {t("test_case_optimization.result.issues.outdated_tests")}
               </Typography>
               <ul className={styles.list}>
                 {outdated_tests.map((testId, index) => (
@@ -233,7 +256,7 @@ export const TestCaseOptimizationResult = ({
                 size="m"
                 className={styles.label}
               >
-                Conflicting Tests:
+                {t("test_case_optimization.result.issues.conflicting_tests")}
               </Typography>
               <ul className={styles.list}>
                 {conflicting_tests.map((testId, index) => (

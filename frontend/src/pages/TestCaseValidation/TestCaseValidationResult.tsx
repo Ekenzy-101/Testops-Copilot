@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
@@ -18,6 +19,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
     results,
     summary,
   } = result;
+  const { t } = useTranslation();
 
   return (
     <div className={styles.container}>
@@ -28,13 +30,13 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
           size="m"
           className={styles.sectionTitle}
         >
-          Validation Summary
+          {t("test_case_validation.result.title")}
         </Typography>
 
         <div className={styles.stats}>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Total Tests
+              {t("test_case_validation.result.total_tests")}
             </Typography>
             <Typography family="mono" purpose="title" size="m">
               {total_tests}
@@ -42,7 +44,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
           </div>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Valid
+              {t("test_case_validation.result.valid_tests")}
             </Typography>
             <Typography
               className={styles.success}
@@ -55,7 +57,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
           </div>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Invalid
+              {t("test_case_validation.result.invalid_tests")}
             </Typography>
             <Typography
               className={styles.error}
@@ -68,7 +70,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
           </div>
           <div className={styles.stat}>
             <Typography family="mono" purpose="body" size="s">
-              Compliance
+              {t("test_case_validation.result.overall_compliance")}
             </Typography>
             <Typography
               className={getClassNameByPercentage(
@@ -100,7 +102,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
           size="m"
           className={styles.sectionTitle}
         >
-          Test Results
+          {t("test_case_validation.result.title2")}
         </Typography>
 
         {results.map((testResult, index) => (
@@ -112,13 +114,17 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
                 size="m"
                 className={styles.testId}
               >
-                Test {testResult.test_id}
+                {t("test_case_validation.result.test_id")} {testResult.test_id}
               </Typography>
               <div className={styles.testStatus}>
                 {testResult.is_valid ? (
-                  <span className={styles.success}>✓ Valid</span>
+                  <span className={styles.success}>
+                    {t("test_case_validation.result.is_valid.success")}
+                  </span>
                 ) : (
-                  <span className={styles.error}>✗ Invalid</span>
+                  <span className={styles.error}>
+                    {t("test_case_validation.result.is_valid.error")}
+                  </span>
                 )}
               </div>
             </div>
@@ -126,7 +132,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
             <div className={styles.compliance}>
               <div className={styles.complianceItem}>
                 <Typography family="mono" purpose="body" size="s">
-                  AAA Pattern:
+                  {t("test_case_validation.result.aaa_compliance")}
                 </Typography>
                 <span
                   className={
@@ -138,7 +144,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
               </div>
               <div className={styles.complianceItem}>
                 <Typography family="mono" purpose="body" size="s">
-                  Allure Decorators:
+                  {t("test_case_validation.result.allure_decorators_complete")}
                 </Typography>
                 <span
                   className={
@@ -152,7 +158,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
               </div>
               <div className={styles.complianceItem}>
                 <Typography family="mono" purpose="body" size="s">
-                  Structure:
+                  {t("test_case_validation.result.structure_valid")}
                 </Typography>
                 <span
                   className={
@@ -172,7 +178,8 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
                   size="s"
                   className={styles.label}
                 >
-                  Issues ({testResult.issues.length}):
+                  {t("test_case_validation.result.issues")} (
+                  {testResult.issues.length}):
                 </Typography>
                 {testResult.issues.map((issue, i) => (
                   <div key={i} className={styles.issue}>

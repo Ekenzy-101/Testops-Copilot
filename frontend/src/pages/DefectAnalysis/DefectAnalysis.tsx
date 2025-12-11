@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
@@ -39,6 +40,7 @@ export const DefectAnalysis = () => {
   const [requirements, setRequirements] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalyzeDefectResponse | null>(null);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +50,7 @@ export const DefectAnalysis = () => {
     try {
       const defects = parseDefects(defectsInput);
       if (!defects.length) {
-        toast.error("Provide at least one defect line");
+        toast.error(t("defect_analysis.client.error"));
         setLoading(false);
         return;
       }
@@ -58,9 +60,9 @@ export const DefectAnalysis = () => {
       };
       const res = await apiClient.analyzeDefects(payload);
       setResult(res);
-      toast.success("Analysis complete");
+      toast.success(t("defect_analysis.result.success"));
     } catch (err: any) {
-      toast.error(err?.message || "Failed to analyze defects");
+      toast.error(err?.message || t("defect_analysis.result.error"));
     } finally {
       setLoading(false);
     }
@@ -74,31 +76,35 @@ export const DefectAnalysis = () => {
         size="l"
         className={styles.title}
       >
-        Analyze Historical Defects
+        {t("defect_analysis.title")}
       </Typography>
       <Typography family="mono" purpose="body" size="m">
-        Identify hotspots and recommendations from historical defects.
+        {t("defect_analysis.subtitle")}
       </Typography>
 
       <Card>
         <form onSubmit={handleSubmit} className={styles.form}>
           <FieldTextArea
-            label="Defects (one per line: id|title|severity|area|tags)"
+            label={t("defect_analysis.input.label")}
             value={defectsInput}
             onChange={setDefectsInput}
-            placeholder="D-101|Null pointer on pricing|High|Pricing|regression,backend"
+            placeholder={t("defect_analysis.input.placeholder")}
             minRows={6}
             required
           />
           <FieldTextArea
-            label="Current requirements (optional)"
+            label={t("defect_analysis.requirements.label")}
             value={requirements}
             onChange={setRequirements}
             minRows={3}
           />
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Analyzing..." : "Analyze Defects"}
+            label={
+              loading
+                ? t("defect_analysis.btn.label_loading")
+                : t("defect_analysis.btn.label")
+            }
             onClick={handleSubmit}
             disabled={loading}
             type="submit"
@@ -115,7 +121,7 @@ export const DefectAnalysis = () => {
       {result && (
         <div className={styles.result}>
           <Typography family="mono" purpose="title" size="m">
-            Hotspots
+            {t("defect_analysis.result.title")}
           </Typography>
           <div className={styles.hotspots}>
             {result.hotspots.map((hs, idx) => (
@@ -124,10 +130,11 @@ export const DefectAnalysis = () => {
                   {hs.area} — {hs.priority}
                 </Typography>
                 <Typography family="mono" purpose="body" size="s">
-                  Risk: {hs.risk}
+                  {t("defect_analysis.result.hotspots.risk")} {hs.risk}
                 </Typography>
                 <Typography family="mono" purpose="body" size="s">
-                  Recommendation: {hs.recommendation}
+                  {t("defect_analysis.result.hotspots.recommendation")}{" "}
+                  {hs.recommendation}
                 </Typography>
               </div>
             ))}

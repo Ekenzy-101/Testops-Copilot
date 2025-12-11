@@ -1,16 +1,74 @@
 /** Utility functions */
 
+import yaml from "js-yaml";
+import { toast } from "react-toastify";
 import { GapSeverity, IssueSeverity, Priority } from "../types";
 
-export const copyToClipboard = async (text: string): Promise<boolean> => {
+export const copyToClipboard = async (text: string, language: string) => {
   try {
     await navigator.clipboard.writeText(text);
-    return true;
-  } catch (err) {
-    console.error("Failed to copy to clipboard:", err);
-    return false;
+    toast.success(language === "ru" ? "Скопировано" : "Copied");
+  } catch (err: any) {
+    const defaultMessage =
+      language === "ru"
+        ? "Не удалось скопировать в буфер обмена."
+        : "Failed to copy to clipboard:";
+    toast.error(err?.message || defaultMessage);
   }
 };
+
+export function extractContentInMarkdown(content: string): string {
+  if (!content) return content;
+
+  const trimmed = content.trim();
+  const fenceRegex = /^```[\w-]*\s*\n([\s\S]*?)\n```$/;
+
+  const match = trimmed.match(fenceRegex);
+  if (match) {
+    return match[1].trim();
+  }
+
+  return content;
+}
+
+export function wrapContentInMarkdown(content: string): string {
+  if (!content) return "```\n```";
+
+  let trimmed = content.trim();
+  if (trimmed.startsWith("```") && trimmed.endsWith("```")) {
+    return trimmed;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    return "```json\n" + `${JSON.stringify(parsed, null, 2)}` + "\n```";
+  } catch {}
+
+  const pythonPatterns = [
+    /^def\s+\w+\s*\(/m, // def foo(...)
+    /^class\s+\w+/m, // class Foo:
+    /^import\s+\w+/m, // import x
+    /^from\s+\w+\s+import/m, // from x import y
+    /^\s+[^:]+:\s*$/m, // indentation + colon
+    /#\s*\w+/m, // comments
+    /"""/m, // triple quotes
+    /\bprint\s*\(/m, // print(...)
+    /\bself\b/m, // Python OOP
+  ];
+
+  if (pythonPatterns.some((re) => re.test(trimmed))) {
+    return "```python\n" + `${trimmed}` + "\n```";
+  }
+
+  try {
+    const parsed = yaml.load(trimmed);
+    if (parsed !== undefined && parsed !== null) {
+      return "```yaml\n" + `${yaml.dump(parsed)}` + "\n```";
+    }
+  } catch {}
+
+  return "```\n" + `${trimmed}` + "\n```";
+}
 
 export const formatPercentage = (
   value: number,

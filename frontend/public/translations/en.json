@@ -1,0 +1,320 @@
+{
+  "auto_test_case_generation": {
+    "api": {
+      "test_cases": {
+        "label": "Test Cases (one per line)",
+        "placeholder": "Paste test case code, one per line..."
+      },
+      "base_url": {
+        "placeholder": "https://api.example.com",
+        "label": "Base URL"
+      },
+      "endpoints": {
+        "label": "Endpoints (comma-separated)",
+        "placeholder": "/api/v1/users, /api/v1/posts"
+      },
+      "spec": {
+        "label": "OpenAPI Specification (YAML/JSON)",
+        "placeholder": "Paste OpenAPI 3.0 specification..."
+      },
+      "auth_token": {
+        "label": "Auth Token",
+        "placeholder": "Bearer Token"
+      }
+    },
+    "ui": {
+      "test_cases": {
+        "label": "Test Cases (one per line)",
+        "placeholder": "Paste test case code, one per line..."
+      },
+      "browser": {
+        "placeholder": "e.g., Chrome, Firefox",
+        "label": "Browser"
+      },
+      "framework": {
+        "label": "Framework"
+      },
+      "requirements": {
+        "label": "UI Requirements",
+        "placeholder": "Enter requirements description..."
+      }
+    },
+    "result": {
+      "framework": "Framework:",
+      "code": {
+        "btn": "Copy Code",
+        "title": "Generated Code"
+      },
+      "dependencies": "Required Dependencies",
+      "error": "Failed to generate test cases",
+      "generation_time": "Generation Time:",
+      "model_used": "Model:",
+      "success": "Test cases generated",
+      "test_count": "Tests Generated:",
+      "title": "Generated Test Case"
+    },
+    "subtitle": "Generate e2e UI or API tests from test cases and specifications",
+    "title": "Generate Automated Test Cases",
+    "btn": {
+      "label": "Generate Test Cases",
+      "label_loading": "Generating..."
+    },
+    "link": "Generate Automated"
+  },
+  "manual_test_case_generation": {
+    "feature": {
+      "label": "Feature",
+      "placeholder": "e.g., User Authentication"
+    },
+    "jira_link": {
+      "placeholder": "https://jira.example.com/issue-123",
+      "label": "JIRA Link"
+    },
+    "owner": {
+      "label": "Owner",
+      "placeholder": "QA Engineer Name"
+    },
+    "requirements": {
+      "label": "Requirements",
+      "placeholder": "Enter requirements description..."
+    },
+    "story": {
+      "label": "Story",
+      "placeholder": "e.g., User Login"
+    },
+    "subtitle": "Generate Allure TestOps as Code test cases from requirements",
+    "title": "Generate Manual Test Cases",
+    "btn": {
+      "label": "Generate Test Cases",
+      "label_loading": "Generating..."
+    },
+    "jira_name": {
+      "label": "JIRA Name",
+      "placeholder": "Issue-123"
+    },
+    "link": "Generate Manual",
+    "result": {
+      "error": "Failed to generate test cases",
+      "generation_time": "Generation Time:",
+      "model_used": "Model:",
+      "success": "Test cases generated",
+      "test_case": {
+        "code": {
+          "btn": "Copy Code",
+          "title": "Generated Code"
+        },
+        "feature": "Feature:",
+        "priority": "Priority:",
+        "steps": {
+          "expected_result": "Expected:",
+          "step_number": "Step",
+          "title": "Test Steps"
+        },
+        "story": "Story:",
+        "title": "Title:"
+      },
+      "title": "Generated Test Case"
+    },
+    "priority": {
+      "label": "Priority"
+    },
+    "test_type": {
+      "label": "Test Type"
+    }
+  },
+  "test_plan_generation": {
+    "goals": {
+      "placeholder": "Increase coverage\\nValidate pricing accuracy",
+      "label": "Goals (one per line)"
+    },
+    "out_of_scope": {
+      "placeholder": "Evolution Managed Kubernetes...",
+      "label": "Out of Scope"
+    },
+    "product": {
+      "placeholder": "Cloud.ru Calculator",
+      "label": "Product"
+    },
+    "environments": {
+      "label": "Environments",
+      "placeholder": ""
+    },
+    "risks": {
+      "label": "Risks",
+      "placeholder": ""
+    },
+    "timelines": {
+      "label": "Timelines / Milestones",
+      "placeholder": ""
+    },
+    "subtitle": "Produce a concise, structured test plan from goals, scope, and risks.",
+    "title": "Generate Test Plan",
+    "btn": {
+      "label": "Generate Test Plan",
+      "label_loading": "Generating..."
+    },
+    "link": "Generate Plan",
+    "result": {
+      "error": "Failed to generate test plan",
+      "model_used": "Model:",
+      "sections": "Sections:",
+      "success": "Test plan generated",
+      "title": "Test Plan"
+    },
+    "scope": {
+      "label": "Scope",
+      "placeholder": "Compute pricing, storage pricing, discounts..."
+    }
+  },
+  "test_case_optimization": {
+    "requirements": {
+      "label": "Requirements",
+      "placeholder": "Enter requirements description..."
+    },
+    "btn": {
+      "label": "Optimize Test Cases",
+      "label_loading": "Optimizing..."
+    },
+    "link": "Optimize",
+    "result": {
+      "coverage_analysis": {
+        "coverage_percentage": "Coverage",
+        "covered_functionality": "Covered",
+        "title": "Coverage Analysis",
+        "total_functionality": "Total Functionality",
+        "uncovered_areas": "Uncovered Areas:"
+      },
+      "coverage_gaps": {
+        "suggested_tests": "Suggested Tests:",
+        "title": "Coverage Gaps"
+      },
+      "duplicates": {
+        "reason": "Reason:",
+        "recommendation": "Recommendation:",
+        "similarity_score": "Similarity:",
+        "test_id": "Test",
+        "title": "Duplicate Tests"
+      },
+      "error": "Failed to optimize test cases",
+      "issues": {
+        "conflicting_tests": "Conflicting Tests:",
+        "outdated_tests": "Outdated Tests:",
+        "title": "Issues"
+      },
+      "success": "Test cases optimized",
+      "suggestions": {
+        "effort": "Effort:",
+        "impact": "Impact:",
+        "title": "Optimization Suggestions"
+      }
+    },
+    "subtitle": "Analyze test coverage, find duplicates, identify gaps, and get optimization suggestions",
+    "test_cases": {
+      "label": "Test Cases (separate multiple test cases with '---' on a new line)",
+      "placeholder": "Paste test case code...&#10;&#10;---&#10;&#10;Paste another test case..."
+    },
+    "title": "Optimize Test Cases"
+  },
+  "defect_analysis": {
+    "api": {
+      "error": "Failed to analyze defects",
+      "success": "Analysis complete"
+    },
+    "btn": {
+      "label": "Analyze Defects",
+      "label_loading": "Analyzing..."
+    },
+    "client": {
+      "error": "Provide at least one defect line"
+    },
+    "input": {
+      "label": "Defects (one per line: id|title|severity|area|tags)",
+      "placeholder": "D-101|Null pointer on pricing|High|Pricing|regression,backend"
+    },
+    "link": "Analyze",
+    "requirements": {
+      "label": "Current requirements (optional)"
+    },
+    "result": {
+      "hotspots": {
+        "recommendation": "Recommendation:",
+        "risk": "Risk:"
+      },
+      "title": "Hotspots"
+    },
+    "subtitle": "Identify hotspots and recommendations from historical defects.",
+    "title": "Analyze Historical Defects"
+  },
+  "test_case_commit": {
+    "branch": {
+      "label": "Branch",
+      "placeholder": "main"
+    },
+    "btn": {
+      "label": "Commit Test Cases",
+      "label_loading": "Committing..."
+    },
+    "commit_message": {
+      "label": "Commit Message",
+      "placeholder": "Add generated test cases"
+    },
+    "content": {
+      "label": "Content",
+      "placeholder": "# paste generated tests"
+    },
+    "file_path": {
+      "label": "File Path",
+      "placeholder": "tests/generated/test_cases.py"
+    },
+    "link": "Commit",
+    "project_id": {
+      "label": "Project ID / Path",
+      "placeholder": "12345678 / test-project"
+    },
+    "result": {
+      "commit_id": "Commit:",
+      "error": "Failed to commit test cases",
+      "file_path": "File:",
+      "status": "Status:",
+      "success": "Test cases committed",
+      "title": "Commit Result"
+    },
+    "subtitle": "Push generated test cases to your GitLab repository",
+    "title": "Commit Test Cases"
+  },
+  "test_case_validation": {
+    "btn": {
+      "label": "Validate Test Cases",
+      "label_loading": "Validating..."
+    },
+    "link": "Validate",
+    "result": {
+      "aaa_compliance": "AAA Pattern:",
+      "allure_decorators_complete": "Allure Decorators:",
+      "error": "Failed to validate test cases",
+      "invalid_tests": "Invalid",
+      "is_valid": {
+        "error": "✗ Invalid",
+        "success": "✓ Valid"
+      },
+      "issues": "Issues",
+      "overall_compliance": "Compliance",
+      "structure_valid": "Structure:",
+      "success": "Test cases validated",
+      "test_id": "Test",
+      "title": "Validation Summary",
+      "title2": "Test Results",
+      "total_tests": "Total Tests",
+      "valid_tests": "Valid"
+    },
+    "strict_mode": {
+      "label": "Strict validation mode"
+    },
+    "subtitle": "Validate test cases against Allure standards and AAA pattern",
+    "test_cases": {
+      "label": "Test Cases (separate multiple test cases with '---' on a new line)",
+      "placeholder": "Paste test case code...&#10;&#10;---&#10;&#10;Paste another test case..."
+    },
+    "title": "Validate Test Cases"
+  }
+}

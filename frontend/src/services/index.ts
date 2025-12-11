@@ -64,18 +64,6 @@ class ApiClient {
     }
   }
 
-  async generateAutoTestCaseGeneration(
-    request: GenerateAutoTestCaseRequest,
-  ): Promise<GenerateAutoTestCaseResponse> {
-    return this.request<GenerateAutoTestCaseResponse>(
-      "/api/v1/automated-tests/generate",
-      {
-        method: "POST",
-        body: JSON.stringify(request),
-      },
-    );
-  }
-
   async analyzeDefects(
     request: AnalyzeDefectRequest,
   ): Promise<AnalyzeDefectResponse> {
@@ -94,11 +82,11 @@ class ApiClient {
     });
   }
 
-  async generateTestCase(
-    request: GenerateManualTestCaseRequest,
-  ): Promise<GenerateManualTestCaseResponse> {
-    return this.request<GenerateManualTestCaseResponse>(
-      "/api/v1/test-cases/generate",
+  async generateAutoTestCase(
+    request: GenerateAutoTestCaseRequest,
+  ): Promise<GenerateAutoTestCaseResponse> {
+    return this.request<GenerateAutoTestCaseResponse>(
+      "/api/v1/test-cases/generate-auto",
       {
         method: "POST",
         body: JSON.stringify(request),
@@ -106,7 +94,19 @@ class ApiClient {
     );
   }
 
-  async generateTestCases(
+  async generateManualTestCase(
+    request: GenerateManualTestCaseRequest,
+  ): Promise<GenerateManualTestCaseResponse> {
+    return this.request<GenerateManualTestCaseResponse>(
+      "/api/v1/test-cases/generate-manual",
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+      },
+    );
+  }
+
+  async generateManualTestCases(
     request: GenerateBatchTestCaseRequest,
   ): Promise<GenerateManualTestCaseResponse[]> {
     return this.request<GenerateManualTestCaseResponse[]>(

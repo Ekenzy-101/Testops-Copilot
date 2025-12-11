@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
@@ -16,6 +17,7 @@ export const TestCaseValidation = () => {
   const [strictMode, setStrictMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +35,9 @@ export const TestCaseValidation = () => {
 
       const response = await apiClient.validateTestCases(request);
       setResult(response);
+      toast.success(t("test_case_validation.result.success"));
     } catch (err: any) {
-      toast(err?.message || "Failed to validate test cases");
+      toast.error(err?.message || t("test_case_validation.result.error"));
     } finally {
       setLoading(false);
     }
@@ -48,25 +51,20 @@ export const TestCaseValidation = () => {
         size="l"
         className={styles.title}
       >
-        Validate Test Cases
+        {t("test_case_validation.title")}
       </Typography>
-      <Typography
-        family="mono"
-        purpose="body"
-        size="m"
-        className={styles.subtitle}
-      >
-        Validate test cases against Allure standards and AAA pattern
+      <Typography family="mono" purpose="body" size="m">
+        {t("test_case_validation.subtitle")}
       </Typography>
 
       <Card>
         <form onSubmit={handleSubmit} className={styles.form}>
           <FieldTextArea
             className={styles.formGroup}
-            label="Test Cases (separate multiple test cases with '---' on a new line)"
+            label={t("test_case_validation.test_cases.label")}
+            placeholder={t("test_case_validation.test_cases.placeholder")}
             value={testCases}
             onChange={setTestCases}
-            placeholder="Paste test case code...&#10;&#10;---&#10;&#10;Paste another test case..."
             minRows={12}
             required
           />
@@ -78,13 +76,17 @@ export const TestCaseValidation = () => {
                 className={styles.checkbox}
               />
               <Typography family="mono" purpose="body" size="m">
-                Strict validation mode
+                {t("test_case_validation.strict_mode.label")}
               </Typography>
             </label>
           </div>
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Validating..." : "Validate Test Cases"}
+            label={
+              loading
+                ? t("test_case_validation.btn.label_loading")
+                : t("test_case_validation.btn.label")
+            }
             onClick={handleSubmit}
             disabled={loading}
             type="submit"

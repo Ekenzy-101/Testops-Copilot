@@ -5,6 +5,19 @@
   margin-left: auto;
 }
 
+.code {
+  display: flex;
+  flex-direction: column;
+  background: vars.$sys-neutral-background1-level;
+  border-radius: 4px;
+  font-size: 12px;
+
+  pre,
+  section {
+    min-height: 400px;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;

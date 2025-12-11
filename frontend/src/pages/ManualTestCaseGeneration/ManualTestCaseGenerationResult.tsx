@@ -1,8 +1,16 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
-import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
+import { MarkdownEditor } from "@snack-uikit/markdown";
+import { Typography } from "@snack-uikit/typography";
 import { GenerateManualTestCaseResponse } from "../../types";
-import { getClassNameByPriority } from "../../utils";
+import {
+  copyToClipboard,
+  extractContentInMarkdown,
+  getClassNameByPriority,
+  wrapContentInMarkdown,
+} from "../../utils";
 import styles from "./ManualTestCaseGenerationResult.module.scss";
 
 interface ManualTestCaseGenerationResultProps {
@@ -13,6 +21,8 @@ export const ManualTestCaseGenerationResult = ({
   result,
 }: ManualTestCaseGenerationResultProps) => {
   const { test_case, generation_time, model_used } = result;
+  const [code, setCode] = useState(wrapContentInMarkdown(test_case.code));
+  const { t, i18n } = useTranslation();
 
   return (
     <Card className={styles.resultCard}>
@@ -22,13 +32,13 @@ export const ManualTestCaseGenerationResult = ({
         size="m"
         className={styles.resultTitle}
       >
-        Generated Test Case
+        {t("manual_test_case_generation.result.title")}
       </Typography>
 
       <div className={styles.metadata}>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Generation Time:
+            {t("manual_test_case_generation.result.generation_time")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {generation_time.toFixed(2)}s
@@ -36,7 +46,7 @@ export const ManualTestCaseGenerationResult = ({
         </div>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Model:
+            {t("manual_test_case_generation.result.model_used")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {model_used}
@@ -49,7 +59,7 @@ export const ManualTestCaseGenerationResult = ({
       <div className={styles.testInfo}>
         <div className={styles.infoRow}>
           <Typography family="mono" purpose="body" size="s">
-            Title:
+            {t("manual_test_case_generation.result.test_case.title")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {test_case.title}
@@ -57,7 +67,7 @@ export const ManualTestCaseGenerationResult = ({
         </div>
         <div className={styles.infoRow}>
           <Typography family="mono" purpose="body" size="s">
-            Feature:
+            {t("manual_test_case_generation.result.test_case.feature")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {test_case.feature}
@@ -65,7 +75,7 @@ export const ManualTestCaseGenerationResult = ({
         </div>
         <div className={styles.infoRow}>
           <Typography family="mono" purpose="body" size="s">
-            Story:
+            {t("manual_test_case_generation.result.test_case.story")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {test_case.story}
@@ -73,7 +83,7 @@ export const ManualTestCaseGenerationResult = ({
         </div>
         <div className={styles.infoRow}>
           <Typography family="mono" purpose="body" size="s">
-            Priority:
+            {t("manual_test_case_generation.result.test_case.priority")}
           </Typography>
           <Typography
             className={getClassNameByPriority(test_case.priority, styles)}
@@ -95,7 +105,7 @@ export const ManualTestCaseGenerationResult = ({
           size="s"
           className={styles.sectionTitle}
         >
-          Test Steps
+          {t("manual_test_case_generation.result.test_case.steps.title")}
         </Typography>
         {test_case.steps.map((step, index) => (
           <div key={index} className={styles.step}>
@@ -105,7 +115,10 @@ export const ManualTestCaseGenerationResult = ({
               size="m"
               className={styles.stepNumber}
             >
-              Step {step.step_number}:
+              {t(
+                "manual_test_case_generation.result.test_case.steps.step_number",
+              )}{" "}
+              {step.step_number}:
             </Typography>
             <Typography family="mono" purpose="body" size="m">
               {step.description}
@@ -116,7 +129,10 @@ export const ManualTestCaseGenerationResult = ({
               size="s"
               className={styles.expectedResult}
             >
-              Expected: {step.expected_result}
+              {t(
+                "manual_test_case_generation.result.test_case.steps.expected_result",
+              )}{" "}
+              {step.expected_result}
             </Typography>
           </div>
         ))}
@@ -131,18 +147,25 @@ export const ManualTestCaseGenerationResult = ({
           size="s"
           className={styles.sectionTitle}
         >
-          Generated Code
+          {t("manual_test_case_generation.result.test_case.code.title")}
         </Typography>
-        <pre className={styles.code}>
-          <code>{test_case.code}</code>
-        </pre>
+        <MarkdownEditor
+          className={styles.code}
+          resizable
+          defaultMode="view"
+          onChange={setCode}
+          value={code}
+          onCodeCopyClick={() =>
+            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+          }
+        />
         <button
           className={styles.copyButton}
-          onClick={() => {
-            navigator.clipboard.writeText(test_case.code);
-          }}
+          onClick={() =>
+            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+          }
         >
-          Copy Code
+          {t("manual_test_case_generation.result.test_case.code.btn")}
         </button>
       </div>
     </Card>

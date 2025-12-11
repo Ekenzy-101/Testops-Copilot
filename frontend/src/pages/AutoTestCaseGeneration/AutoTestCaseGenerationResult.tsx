@@ -1,6 +1,14 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
+import { MarkdownEditor } from "@snack-uikit/markdown";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
+import {
+  copyToClipboard,
+  extractContentInMarkdown,
+  wrapContentInMarkdown,
+} from "../../utils";
 import { GenerateAutoTestCaseResponse } from "../../types";
 import styles from "./AutoTestCaseGenerationTestResult.module.scss";
 
@@ -9,6 +17,9 @@ interface TestResultProps {
 }
 
 export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
+  const { t, i18n } = useTranslation();
+  const [code, setCode] = useState(wrapContentInMarkdown(result.test_code));
+
   return (
     <Card className={styles.resultCard}>
       <Typography
@@ -17,13 +28,13 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
         size="m"
         className={styles.resultTitle}
       >
-        Generated Automated Tests
+        {t("auto_test_case_generation.result.title")}
       </Typography>
 
       <div className={styles.metadata}>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Tests Generated:
+            {t("auto_test_case_generation.result.test_count")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {result.test_count}
@@ -31,7 +42,7 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
         </div>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Framework:
+            {t("auto_test_case_generation.result.framework")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {result.framework}
@@ -39,7 +50,7 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
         </div>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Generation Time:
+            {t("auto_test_case_generation.result.generation_time")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {result.generation_time.toFixed(2)}s
@@ -47,7 +58,7 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
         </div>
         <div className={styles.metadataItem}>
           <Typography family="mono" purpose="body" size="s">
-            Model:
+            {t("auto_test_case_generation.result.model_used")}
           </Typography>
           <Typography family="mono" purpose="body" size="m">
             {result.model_used}
@@ -65,7 +76,7 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
               size="s"
               className={styles.sectionTitle}
             >
-              Required Dependencies
+              {t("auto_test_case_generation.result.dependencies")}
             </Typography>
             <div className={styles.dependencyList}>
               {result.dependencies.map((dep, index) => (
@@ -87,18 +98,25 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
           size="s"
           className={styles.sectionTitle}
         >
-          Generated Test Code
+          {t("auto_test_case_generation.result.code.title")}
         </Typography>
-        <pre className={styles.code}>
-          <code>{result.test_code}</code>
-        </pre>
+        <MarkdownEditor
+          className={styles.code}
+          resizable
+          defaultMode="view"
+          onChange={setCode}
+          value={code}
+          onCodeCopyClick={() =>
+            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+          }
+        />
         <button
           className={styles.copyButton}
-          onClick={() => {
-            navigator.clipboard.writeText(result.test_code);
-          }}
+          onClick={() =>
+            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+          }
         >
-          Copy Code
+          {t("auto_test_case_generation.result.code.btn")}
         </button>
       </div>
     </Card>

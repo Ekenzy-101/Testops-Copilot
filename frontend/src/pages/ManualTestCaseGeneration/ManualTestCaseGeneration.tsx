@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
@@ -21,9 +22,9 @@ export const ManualTestCaseGeneration = () => {
     jira_link: "",
     jira_name: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,10 +32,13 @@ export const ManualTestCaseGeneration = () => {
     setResult(null);
 
     try {
-      const response = await apiClient.generateTestCase(formData);
+      const response = await apiClient.generateManualTestCase(formData);
       setResult(response);
+      toast.success(t("manual_test_case_generation.result.success"));
     } catch (err: any) {
-      toast.error(err?.message || "Failed to generate test case");
+      toast.error(
+        err?.message || t("manual_test_case_generation.result.error"),
+      );
     } finally {
       setLoading(false);
     }
@@ -55,15 +59,10 @@ export const ManualTestCaseGeneration = () => {
         size="l"
         className={styles.title}
       >
-        Generate Manual Test Case
+        {t("manual_test_case_generation.title")}
       </Typography>
-      <Typography
-        family="mono"
-        purpose="body"
-        size="m"
-        className={styles.subtitle}
-      >
-        Generate Allure TestOps as Code test cases from requirements
+      <Typography family="mono" purpose="body" size="m">
+        {t("manual_test_case_generation.subtitle")}
       </Typography>
 
       <Card>
@@ -71,7 +70,7 @@ export const ManualTestCaseGeneration = () => {
           <div className={styles.formRow}>
             <FieldSelect
               className={styles.formGroup}
-              label="Test Type"
+              label={t("manual_test_case_generation.test_type.label")}
               value={formData.test_type}
               onChange={(value) =>
                 handleChange("test_type", value as "UI" | "API")
@@ -84,7 +83,7 @@ export const ManualTestCaseGeneration = () => {
             />
             <FieldSelect
               className={styles.formGroup}
-              label="Priority"
+              label={t("manual_test_case_generation.priority.label")}
               value={formData.priority}
               onChange={(value) => handleChange("priority", value as Priority)}
               options={[
@@ -95,70 +94,73 @@ export const ManualTestCaseGeneration = () => {
               required
             />
           </div>
-
           <FieldTextArea
             className={styles.formGroup}
-            label="Requirements"
+            label={t("manual_test_case_generation.requirements.label")}
+            placeholder={t(
+              "manual_test_case_generation.requirements.placeholder",
+            )}
             minRows={6}
             onChange={(value: string) => handleChange("requirements", value)}
-            placeholder="Enter requirements description..."
             required
             value={formData.requirements}
           />
-
           <div className={styles.formRow}>
             <FieldText
               className={styles.formGroup}
-              label="Feature"
               inputMode="text"
+              label={t("manual_test_case_generation.feature.label")}
+              placeholder={t("manual_test_case_generation.feature.placeholder")}
               onChange={(value: string) => handleChange("feature", value)}
-              placeholder="e.g., User Authentication"
               required
               value={formData.feature}
             />
             <FieldText
               className={styles.formGroup}
-              label="Story"
+              label={t("manual_test_case_generation.story.label")}
+              placeholder={t("manual_test_case_generation.story.placeholder")}
               inputMode="text"
               onChange={(value: string) => handleChange("story", value)}
-              placeholder="e.g., User login"
               required
               value={formData.story}
             />
           </div>
-
           <div className={styles.formRow}>
             <FieldText
               className={styles.formGroup}
               inputMode="text"
-              label="Owner"
+              label={t("manual_test_case_generation.owner.label")}
+              placeholder={t("manual_test_case_generation.owner.placeholder")}
               onChange={(value: string) => handleChange("owner", value)}
-              placeholder="QA Engineer name"
               required
               value={formData.owner}
             />
             <FieldText
               className={styles.formGroup}
               inputMode="text"
-              label="JIRA Link"
-              value={formData.jira_link || ""}
+              label={t("manual_test_case_generation.jira_link.label")}
+              placeholder={t(
+                "manual_test_case_generation.jira_link.placeholder",
+              )}
+              value={formData.jira_link}
               onChange={(value: string) => handleChange("jira_link", value)}
-              placeholder="https://jira.example.com/issue-123"
             />
           </div>
-
           <FieldText
             className={styles.formGroup}
             inputMode="text"
-            label="JIRA Name"
-            value={formData.jira_name || ""}
+            label={t("manual_test_case_generation.jira_name.label")}
+            placeholder={t("manual_test_case_generation.jira_name.placeholder")}
+            value={formData.jira_name}
             onChange={(value: string) => handleChange("jira_name", value)}
-            placeholder="Issue-123"
           />
-
           <ButtonFilled
             className={styles.actions}
-            label={loading ? "Generating..." : "Generate Test Case"}
+            label={
+              loading
+                ? t("manual_test_case_generation.btn.label_loading")
+                : t("manual_test_case_generation.btn.label")
+            }
             onClick={handleSubmit}
             disabled={loading}
             type="submit"

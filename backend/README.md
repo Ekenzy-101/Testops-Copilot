@@ -1,5 +1,8 @@
 # Kenzy QA Copilot - Backend
 
+- [English](README.md)
+- [Русский](README.ru.md)
+
 FastAPI service powering the QA copilot features.
 
 ## Features

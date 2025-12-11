@@ -53,15 +53,16 @@
 }
 
 .code {
-  background: vars.$sys-neutral-background;
+  display: flex;
+  flex-direction: column;
+  background: vars.$sys-neutral-background1-level;
   border-radius: 4px;
-  color: vars.$sys-primary-accent-default;
   font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
-  max-height: 600px;
-  overflow: auto;
-  padding: 16px;
+
+  pre,
+  section {
+    min-height: 400px;
+  }
 }
 
 .copyButton {
