@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-from openai import DefaultAioHttpClient
 from openai import AsyncOpenAI
 from typing import Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -52,7 +51,6 @@ class OpenAIAPIService:
         async with AsyncOpenAI(
             api_key=self.api_key,
             base_url=self.api_url,
-            http_client=DefaultAioHttpClient(),
         ) as client:
             try:
                 response = await client.chat.completions.create(
@@ -94,7 +92,8 @@ class OpenAIAPIService:
         """Check if OpenAI API is available."""
         try:
             async with AsyncOpenAI(
-                api_key=self.api_key, base_url=self.api_url
+                api_key=self.api_key,
+                base_url=self.api_url,
             ) as client:
                 response = await client.models.list()
                 return len(response.data) > 0

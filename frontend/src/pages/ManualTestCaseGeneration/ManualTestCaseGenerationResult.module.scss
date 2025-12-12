@@ -37,6 +37,8 @@
 }
 
 .steps {
+  display: flex;
+  flex-direction: column;
   margin: 16px 0;
 }
 
@@ -47,20 +49,10 @@
 }
 
 .step {
-  padding: 12px;
-  background: vars.$sys-neutral-background2-level;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 8px;
-}
-
-.stepNumber {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.expectedResult {
-  margin-top: 4px;
-  padding-left: 16px;
 }
 
 .codeSection {

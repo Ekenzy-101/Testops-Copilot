@@ -54,7 +54,7 @@ Priority: {priority.value}
         if jira_name:
             prompt += f"JIRA Name: {jira_name}\n"
 
-        prompt += """
+        prompt += f"""
 The test case must:
 1. Follow AAA pattern (Arrange-Act-Assert)
 2. Use proper Allure decorators:
@@ -65,10 +65,11 @@ The test case must:
    - @allure.suite(test_type)
    - @pytest.mark.manual
    - @allure.title(test_title)
+   - @allure.description(test_description)
    - @allure.tag(priority)
    - @allure.label("priority", priority)
 3. Include proper class structure with test method
-4. Use allure_step context manager for each step
+4. Use allure.step context manager for each step with expected results
 5. Include arrange, act, and assert sections clearly
 
 Generate the complete Python code following this exact format:
@@ -80,21 +81,22 @@ Generate the complete Python code following this exact format:
 @allure.suite("{test_type}")
 @pytest.mark.manual
 class TestClassName:
-    @allure.title("Test Title")
-    @allure.link(jira_link, name=jira_name)  # if jira_link provided
+    @allure.title("Test Function Name")
+    @allure.description("Test Function Description")
+    {f'@allure.link({jira_link}, name={jira_name})' if jira_link  else ''}  
     @allure.tag("{priority}")
     @allure.label("priority", "{priority}")
     def test_function_name(self) -> None:
         # Arrange section
-        with allure_step("Arrange step description"):
+        with allure.step("Arrange step description"):
             pass
         
         # Act section
-        with allure_step("Act step description"):
+        with allure.step("Act step description"):
             pass
         
         # Assert section
-        with allure_step("Assert step description"):
+        with allure.step("Assert step description"):
             pass
 
 Return ONLY the Python code, no explanations."""
@@ -115,7 +117,7 @@ Return ONLY the Python code, no explanations."""
 
         # Extract steps
         steps = []
-        step_matches = re.finditer(r'with\s+allure_step\(["\'](.+?)["\']\)', code)
+        step_matches = re.finditer(r'with\s+allure.step\(["\'](.+?)["\']\)', code)
         for idx, match in enumerate(step_matches, 1):
             step_desc = match.group(1)
             # Try to determine if it's arrange, act, or assert

@@ -109,26 +109,13 @@ export const ManualTestCaseGenerationResult = ({
         </Typography>
         {test_case.steps.map((step, index) => (
           <div key={index} className={styles.step}>
-            <Typography
-              family="mono"
-              purpose="body"
-              size="m"
-              className={styles.stepNumber}
-            >
+            <Typography family="mono" purpose="body" size="m">
               {t(
                 "manual_test_case_generation.result.test_case.steps.step_number",
               )}{" "}
-              {step.step_number}:
+              {step.step_number}: {step.description}
             </Typography>
-            <Typography family="mono" purpose="body" size="m">
-              {step.description}
-            </Typography>
-            <Typography
-              family="mono"
-              purpose="body"
-              size="s"
-              className={styles.expectedResult}
-            >
+            <Typography family="mono" purpose="body" size="s">
               {t(
                 "manual_test_case_generation.result.test_case.steps.expected_result",
               )}{" "}

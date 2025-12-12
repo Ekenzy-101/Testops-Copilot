@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     # OpenAI API
     openai_api_key: str
     openai_api_url: str = "https://foundation-models.api.cloud.ru/v1"
+    openai_log: str = "info"
     openai_model: str = "ai-sage/GigaChat3-10B-A1.8B"
 
 

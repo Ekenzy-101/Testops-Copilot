@@ -41,7 +41,7 @@ UI Requirements:
 Framework: {framework}
 
 Requirements:
-1. Use pytest framework
+1. Use pytest framework with proper Allure decorators
 2. Include proper setup and teardown
 3. Use page object pattern if applicable
 4. Include proper assertions

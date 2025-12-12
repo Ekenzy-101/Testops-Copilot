@@ -1,5 +1,6 @@
 """Test case validation service."""
 
+import json
 import re
 import logging
 from typing import List
@@ -131,15 +132,16 @@ class TestValidatorService:
             is_valid = False
 
         # Check for description/steps
-        if not re.search(r"allure_step", test_case):
+        if "allure.step" not in test_case:
             issues.append(
                 ValidationIssue(
                     severity=IssueSeverity.WARNING,
                     field="structure",
                     issue="No test steps found",
-                    recommendation="Add test steps using allure_step context manager",
+                    recommendation="Add test steps using allure.step context manager",
                 )
             )
+            is_valid = False
 
         return is_valid
 
@@ -159,7 +161,7 @@ class TestValidatorService:
             issues.append(
                 ValidationIssue(
                     severity=IssueSeverity.WARNING,
-                    field="AAA pattern",
+                    field="aaa_pattern",
                     issue="Arrange section not clearly identified",
                     recommendation="Add clear Arrange section with setup steps",
                 )
@@ -169,7 +171,7 @@ class TestValidatorService:
             issues.append(
                 ValidationIssue(
                     severity=IssueSeverity.ERROR,
-                    field="AAA pattern",
+                    field="aaa_pattern",
                     issue="Act section not clearly identified",
                     recommendation="Add clear Act section with action steps",
                 )
@@ -179,7 +181,7 @@ class TestValidatorService:
             issues.append(
                 ValidationIssue(
                     severity=IssueSeverity.ERROR,
-                    field="AAA pattern",
+                    field="aaa_pattern",
                     issue="Assert section not clearly identified",
                     recommendation="Add clear Assert section with verification steps",
                 )
@@ -198,6 +200,7 @@ class TestValidatorService:
             "@allure.story": "Missing @allure.story decorator",
             "@allure.suite": "Missing @allure.suite decorator",
             "@pytest.mark.manual": "Missing @pytest.mark.manual decorator",
+            "@allure.description": "Missing @allure.description decorator",
             "@allure.title": "Missing @allure.title decorator",
             "@allure.tag": "Missing @allure.tag decorator",
         }
@@ -210,7 +213,7 @@ class TestValidatorService:
                 issues.append(
                     ValidationIssue(
                         severity=severity,
-                        field="Allure decorators",
+                        field="allure_decorators",
                         issue=message,
                         recommendation=f"Add {decorator} decorator",
                     )
@@ -223,11 +226,12 @@ class TestValidatorService:
             issues.append(
                 ValidationIssue(
                     severity=IssueSeverity.WARNING,
-                    field="Allure decorators",
+                    field="allure_decorators",
                     issue="Priority label not found",
                     recommendation="Add @allure.label('priority', 'CRITICAL'|'NORMAL'|'LOW')",
                 )
             )
+            is_complete = False
 
         return is_complete
 
@@ -239,16 +243,11 @@ class TestValidatorService:
             prompt = f"""Validate the following test case against Allure TestOps as Code standards.
 
 Test Case:
-{test_case[:2000]}  # Truncate if too long
+{test_case}
 
 Strict Mode: {strict_mode}
 
-Check for:
-1. Structure completeness (description, steps, expected results)
-2. AAA pattern compliance
-3. Allure decorators correctness
-4. Code quality and best practices
-
+Check for code quality and best practices
 Return JSON with issues:
 {{
     "issues": [
@@ -260,18 +259,13 @@ Return JSON with issues:
         }}
     ]
 }}"""
-
             system_prompt = """You are an expert QA engineer validating test cases against Allure TestOps standards."""
-
             response = await self.openai_api.generate(
                 prompt=prompt,
                 system_prompt=system_prompt,
                 temperature=0.2,
                 max_tokens=1000,
             )
-
-            # Parse JSON response
-            import json
 
             json_match = re.search(r"\{.*\}", response, re.DOTALL)
             if json_match:
