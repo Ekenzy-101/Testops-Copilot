@@ -68,25 +68,25 @@ The test case must:
    - @allure.description(test_description)
    - @allure.tag(priority)
    - @allure.label("priority", priority)
-3. Include proper class structure with test method
+3. Include proper class structure with test methods considering the requirements and test type
 4. Use allure.step context manager for each step with expected results
 5. Include arrange, act, and assert sections clearly
 
-Generate the complete Python code following this exact format:
+Generate the complete Python code with no explanations following this format:
 
 @allure.manual
-@allure.label("owner", "{owner}")
-@allure.feature("{feature}")
-@allure.story("{story}")
-@allure.suite("{test_type}")
+@allure.label("owner", owner)
+@allure.feature(feature)
+@allure.story(story)
+@allure.suite(test_type)
 @pytest.mark.manual
-class TestClassName:
-    @allure.title("Test Function Name")
-    @allure.description("Test Function Description")
-    {f'@allure.link({jira_link}, name={jira_name})' if jira_link  else ''}  
-    @allure.tag("{priority}")
-    @allure.label("priority", "{priority}")
-    def test_function_name(self) -> None:
+class TestFeature:
+    @allure.title(test_title)
+    @allure.description(test_description")
+    @allure.link(jira_link, name=jira_name)  
+    @allure.tag(priority)
+    @allure.label("priority", priority)
+    def test_method(self) -> None:
         # Arrange section
         with allure.step("Arrange step description"):
             pass
@@ -98,8 +98,7 @@ class TestClassName:
         # Assert section
         with allure.step("Assert step description"):
             pass
-
-Return ONLY the Python code, no explanations."""
+"""
 
         return prompt
 
@@ -202,7 +201,7 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
                 prompt=prompt,
                 system_prompt=system_prompt,
                 temperature=0.7,
-                max_tokens=2000,
+                max_tokens=10000,
             )
 
             # Clean up the code (remove markdown code blocks if present)
