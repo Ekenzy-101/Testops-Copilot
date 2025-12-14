@@ -30,9 +30,8 @@ backend:build:
 backend:test:
   <<: *backend_template
   artifacts:
-    when: always
     paths:
-      - allure-results
+      - backend/allure-results
     expire_in: 1 day
   stage: test
   script:
@@ -75,7 +74,7 @@ pages:
   stage: deploy
   image: frankescobar/allure-docker-service
   script:
-    - allure generate allure-results -o public --clean
+    - allure generate backend/allure-results -o public --clean
   artifacts:
     paths:
       - public
