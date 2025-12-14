@@ -41,15 +41,14 @@ src/
 ├── components/            # Reusable UI Components (e.g., Layout)
 ├── pages/                 # Feature pages
 ├── services/              # API client helpers
-├── utilities/             # Shared utils/constants
-├── theme/                 # Theme provider and Snack UIKit setup
-└── types/                 # Shared TypeScript types
+├── utils/                 # Shared utils/constants and TypeScript types
+└── theme/                 # Theme provider and Snack UIKit setup
 ```
 
 ## UI/tech stack
 
 - React 19, TypeScript, React Router 7
-- Rsbuild for bundling; Snack UIKit for components
+- Rsbuild for bundling; Rstest for testing and Snack UIKit for components
 
 ## Development notes
 

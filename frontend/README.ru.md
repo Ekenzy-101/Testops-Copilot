@@ -41,15 +41,14 @@ src/
 ├── components/            # Переиспользуемые UI-компоненты (например, Layout)
 ├── pages/                 # Страницы функций
 ├── services/              # Вспомогательные функции API-клиента
-├── utilities/             # Общие утилиты/константы
-├── theme/                 # Провайдер темы и настройка Snack UIKit
-└── types/                 # Общие TypeScript типы
+├── utils/             # Общие утилиты/константы и TypeScript типы
+└── theme/                 # Провайдер темы и настройка Snack UIKit
 ```
 
 ## UI/Технологический стек
 
 - React 19, TypeScript, React Router 7
-- Rsbuild для сборки; Snack UIKit для компонентов
+- Rsbuild для сборки; Rstest для тестирование и Snack UIKit для компонентов
 
 ## Заметки по разработке
 

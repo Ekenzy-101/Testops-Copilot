@@ -57,4 +57,4 @@ API docs after startup:
 ## Project layout
 
 - `app/` — FastAPI app, routers, services
-- `tests/` — automated tests
+- `tests/` — Automated tests
