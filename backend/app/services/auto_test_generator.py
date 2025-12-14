@@ -69,14 +69,7 @@ Return ONLY the Python code, no explanations."""
         endpoints: List[str] = None,
     ) -> str:
         """Create prompt for API test generation."""
-        api_endpoints = self.openapi_parser.get_endpoints(openapi_spec)
-        if endpoints:
-            api_endpoints = [
-                ep
-                for ep in api_endpoints
-                if ep["path"] in endpoints or ep["operation_id"] in endpoints
-            ]
-
+        api_endpoints = self.openapi_parser.get_endpoints(openapi_spec, endpoints)
         endpoints_text = "\n".join(
             [
                 f"- {ep['method']} {ep['path']}: {ep.get('summary', 'No summary')}"

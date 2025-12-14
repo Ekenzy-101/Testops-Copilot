@@ -38,11 +38,10 @@ class TestPlanGeneratorService:
         )
 
     def _build_prompt(self, req: GenerateTestPlanRequest) -> str:
-        goals = "\n".join(f"- {g}" for g in req.goals)
         return (
             f"Create a structured test plan.\n\n"
             f"Product: {req.product}\n"
-            f"Goals:\n{goals}\n"
+            f"Goals:\n{req.goals}\n"
             f"Scope:\n{req.scope}\n"
             f"Out of Scope:\n{req.out_of_scope or 'None'}\n"
             f"Risks:\n{req.risks or 'None'}\n"

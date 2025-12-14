@@ -2,8 +2,11 @@ import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
-import { ValidateTestCaseResponse } from "../../types";
-import { getClassNameByPercentage, getClassNameBySeverity } from "../../utils";
+import {
+  getClassNameByPercentage,
+  getClassNameBySeverity,
+  ValidateTestCaseResponse,
+} from "../../utils";
 import styles from "./TestCaseValidationResult.module.scss";
 
 interface ValidationResultProps {

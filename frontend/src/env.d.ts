@@ -1,4 +1,5 @@
 /// <reference types="@rsbuild/core/types" />
+/// <reference types="@rstest/core/globals" />
 
 /**
  * Imports the SVG file as a React component.

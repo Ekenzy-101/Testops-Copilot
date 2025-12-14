@@ -2,7 +2,6 @@
 import type {
   GenerateManualTestCaseRequest,
   GenerateManualTestCaseResponse,
-  GenerateBatchTestCaseRequest,
   GenerateAutoTestCaseRequest,
   GenerateAutoTestCaseResponse,
   OptimizeTestCaseRequest,
@@ -16,7 +15,7 @@ import type {
   GenerateTestPlanResponse,
   AnalyzeDefectRequest,
   AnalyzeDefectResponse,
-} from "../types";
+} from "../utils";
 
 const API_BASE_URL =
   process.env.PUBLIC_API_BASE_URL ||
@@ -82,7 +81,7 @@ class ApiClient {
     });
   }
 
-  async generateAutoTestCase(
+  async generateAutoTestCases(
     request: GenerateAutoTestCaseRequest,
   ): Promise<GenerateAutoTestCaseResponse> {
     return this.request<GenerateAutoTestCaseResponse>(
@@ -94,23 +93,11 @@ class ApiClient {
     );
   }
 
-  async generateManualTestCase(
+  async generateManualTestCases(
     request: GenerateManualTestCaseRequest,
   ): Promise<GenerateManualTestCaseResponse> {
     return this.request<GenerateManualTestCaseResponse>(
       "/api/v1/test-cases/generate-manual",
-      {
-        method: "POST",
-        body: JSON.stringify(request),
-      },
-    );
-  }
-
-  async generateManualTestCases(
-    request: GenerateBatchTestCaseRequest,
-  ): Promise<GenerateManualTestCaseResponse[]> {
-    return this.request<GenerateManualTestCaseResponse[]>(
-      "/api/v1/test-cases/generate-batch",
       {
         method: "POST",
         body: JSON.stringify(request),

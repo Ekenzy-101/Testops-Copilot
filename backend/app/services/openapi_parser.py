@@ -44,19 +44,21 @@ class OpenAPIParserService:
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON: {e}")
 
-    def get_endpoints(self, spec: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def get_endpoints(
+        self, spec: Dict[str, Any], paths: List[str] = None
+    ) -> List[Dict[str, Any]]:
         """
-        Extract all endpoints from OpenAPI spec.
+        Extract and filter endpoints from OpenAPI spec by paths.
 
         Args:
             spec: Parsed OpenAPI specification
+            paths: Optional list of paths to filter by
 
         Returns:
             List of endpoint definitions
         """
         endpoints = []
-        paths = spec.get("paths", {})
-        for path, path_item in paths.items():
+        for path, path_item in spec.get("paths", {}).items():
             for method, operation in path_item.items():
                 if method in [
                     "get",
@@ -82,56 +84,8 @@ class OpenAPIParserService:
                             "tags": operation.get("tags", []),
                         }
                     )
+
+        if paths:
+            endpoints = [ep for ep in endpoints if ep["path"] in paths]
+
         return endpoints
-
-    def get_schemas(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Extract all schemas from OpenAPI spec.
-
-        Args:
-            spec: Parsed OpenAPI specification
-
-        Returns:
-            Dictionary of schema definitions
-        """
-        components = spec.get("components", {})
-        return components.get("schemas", {})
-
-    def filter_endpoints(
-        self,
-        endpoints: List[Dict[str, Any]],
-        tags: Optional[List[str]] = None,
-        methods: Optional[List[str]] = None,
-    ) -> List[Dict[str, Any]]:
-        """
-        Filter endpoints by tags and/or methods.
-
-        Args:
-            endpoints: List of endpoints
-            tags: Optional list of tags to filter by
-            methods: Optional list of HTTP methods to filter by
-
-        Returns:
-            Filtered list of endpoints
-        """
-        result = endpoints
-        if tags:
-            result = [
-                ep for ep in result if any(tag in ep.get("tags", []) for tag in tags)
-            ]
-        if methods:
-            result = [ep for ep in result if ep.get("method") in methods]
-        return result
-
-    def get_security_schemes(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Extract security schemes from OpenAPI spec.
-
-        Args:
-            spec: Parsed OpenAPI specification
-
-        Returns:
-            Dictionary of security schemes
-        """
-        components = spec.get("components", {})
-        return components.get("securitySchemes", {})

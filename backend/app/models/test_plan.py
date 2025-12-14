@@ -9,7 +9,7 @@ class GenerateTestPlanRequest(BaseModel):
 
     __test__ = False
     product: str = Field(..., description="Product or system under test")
-    goals: List[str] = Field(..., description="Testing goals/objectives")
+    goals: str = Field(..., description="Testing goals/objectives")
     scope: str = Field(..., description="In-scope functionality or features")
     out_of_scope: Optional[str] = Field(None, description="Out-of-scope areas")
     risks: Optional[str] = Field(None, description="Known risks and constraints")

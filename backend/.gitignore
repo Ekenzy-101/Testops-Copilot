@@ -46,6 +46,7 @@ logs/
 .coverage
 htmlcov/
 .tox/
+allure*/
 
 # OS
 .DS_Store

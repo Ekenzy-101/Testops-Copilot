@@ -1,45 +1,54 @@
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
 import { Card } from "@snack-uikit/card";
-import { FieldTextArea } from "@snack-uikit/fields";
 import { Spinner } from "@snack-uikit/loaders";
+import { MarkdownEditor } from "@snack-uikit/markdown";
 import { Checkbox } from "@snack-uikit/toggles";
 import { Typography } from "@snack-uikit/typography";
 import { apiClient } from "../../services";
-import { ValidateTestCaseRequest } from "../../types";
+import {
+  parseTestCases,
+  unwrapMarkdownCodeFence,
+  ValidateTestCaseRequest,
+  ValidateTestCaseResponse,
+  ValidateTestCaseSchema,
+  wrapInMarkdownCodeFence,
+} from "../../utils";
 import { ValidationResult } from "./TestCaseValidationResult";
 import styles from "./TestCaseValidation.module.scss";
 
 export const TestCaseValidation = () => {
-  const [testCases, setTestCases] = useState("");
-  const [strictMode, setStrictMode] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const {
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    setValue,
+    watch,
+  } = useForm<ValidateTestCaseRequest>({
+    resolver: valibotResolver(ValidateTestCaseSchema),
+    defaultValues: {
+      strict_mode: false,
+      test_cases: "",
+    },
+  });
+  const [result, setResult] = useState<ValidateTestCaseResponse | null>(null);
   const { t } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const onSubmit = async (request: ValidateTestCaseRequest) => {
     setResult(null);
-
     try {
-      const testCasesList = testCases
-        .split("\n---\n")
-        .filter((tc) => tc.trim());
-      const request: ValidateTestCaseRequest = {
-        test_cases: testCasesList,
-        strict_mode: strictMode,
-      };
-
+      const test_cases = parseTestCases(
+        unwrapMarkdownCodeFence(request.test_cases),
+      );
+      request.test_cases = test_cases as any;
       const response = await apiClient.validateTestCases(request);
       setResult(response);
       toast.success(t("test_case_validation.result.success"));
     } catch (err: any) {
       toast.error(err?.message || t("test_case_validation.result.error"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -58,21 +67,25 @@ export const TestCaseValidation = () => {
       </Typography>
 
       <Card>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <FieldTextArea
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+          <MarkdownEditor
             className={styles.formGroup}
             label={t("test_case_validation.test_cases.label")}
             placeholder={t("test_case_validation.test_cases.placeholder")}
-            value={testCases}
-            onChange={setTestCases}
-            minRows={12}
+            error={errors.test_cases?.message}
+            value={watch("test_cases")}
+            onChange={(value) =>
+              setValue("test_cases", wrapInMarkdownCodeFence(value))
+            }
+            defaultMode="edit"
+            resizable
             required
           />
           <div className={styles.formGroup}>
             <label className={styles.checkboxLabel}>
               <Checkbox
-                checked={strictMode}
-                onChange={setStrictMode}
+                checked={watch("strict_mode")}
+                onChange={(value) => setValue("strict_mode", value)}
                 className={styles.checkbox}
               />
               <Typography family="mono" purpose="body" size="m">
@@ -83,18 +96,17 @@ export const TestCaseValidation = () => {
           <ButtonFilled
             className={styles.actions}
             label={
-              loading
+              isSubmitting
                 ? t("test_case_validation.btn.label_loading")
                 : t("test_case_validation.btn.label")
             }
-            onClick={handleSubmit}
-            disabled={loading}
+            disabled={isSubmitting}
             type="submit"
           />
         </form>
       </Card>
 
-      {loading && (
+      {isSubmitting && (
         <div className={styles.loader}>
           <Spinner size="l" />
         </div>

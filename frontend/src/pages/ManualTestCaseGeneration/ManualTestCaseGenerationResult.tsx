@@ -4,12 +4,12 @@ import { Card } from "@snack-uikit/card";
 import { Divider } from "@snack-uikit/divider";
 import { MarkdownEditor } from "@snack-uikit/markdown";
 import { Typography } from "@snack-uikit/typography";
-import { GenerateManualTestCaseResponse } from "../../types";
 import {
   copyToClipboard,
-  extractContentInMarkdown,
+  unwrapMarkdownCodeFence,
   getClassNameByPriority,
-  wrapContentInMarkdown,
+  wrapInMarkdownCodeFence,
+  GenerateManualTestCaseResponse,
 } from "../../utils";
 import styles from "./ManualTestCaseGenerationResult.module.scss";
 
@@ -21,7 +21,7 @@ export const ManualTestCaseGenerationResult = ({
   result,
 }: ManualTestCaseGenerationResultProps) => {
   const { test_case, generation_time, model_used } = result;
-  const [code, setCode] = useState(wrapContentInMarkdown(test_case.code));
+  const [code, setCode] = useState(wrapInMarkdownCodeFence(test_case.code));
   const { t, i18n } = useTranslation();
 
   return (
@@ -143,13 +143,13 @@ export const ManualTestCaseGenerationResult = ({
           onChange={setCode}
           value={code}
           onCodeCopyClick={() =>
-            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+            copyToClipboard(unwrapMarkdownCodeFence(code), i18n.language)
           }
         />
         <button
           className={styles.copyButton}
           onClick={() =>
-            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+            copyToClipboard(unwrapMarkdownCodeFence(code), i18n.language)
           }
         >
           {t("manual_test_case_generation.result.test_case.code.btn")}

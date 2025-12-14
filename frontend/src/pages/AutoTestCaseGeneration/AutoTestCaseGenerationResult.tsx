@@ -6,10 +6,10 @@ import { Typography } from "@snack-uikit/typography";
 import { Divider } from "@snack-uikit/divider";
 import {
   copyToClipboard,
-  extractContentInMarkdown,
-  wrapContentInMarkdown,
+  unwrapMarkdownCodeFence,
+  wrapInMarkdownCodeFence,
 } from "../../utils";
-import { GenerateAutoTestCaseResponse } from "../../types";
+import { GenerateAutoTestCaseResponse } from "../../utils";
 import styles from "./AutoTestCaseGenerationTestResult.module.scss";
 
 interface TestResultProps {
@@ -18,7 +18,7 @@ interface TestResultProps {
 
 export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
   const { t, i18n } = useTranslation();
-  const [code, setCode] = useState(wrapContentInMarkdown(result.test_code));
+  const [code, setCode] = useState(wrapInMarkdownCodeFence(result.test_code));
 
   return (
     <Card className={styles.resultCard}>
@@ -107,13 +107,13 @@ export const AutoTestCaseGenerationResult = ({ result }: TestResultProps) => {
           onChange={setCode}
           value={code}
           onCodeCopyClick={() =>
-            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+            copyToClipboard(unwrapMarkdownCodeFence(code), i18n.language)
           }
         />
         <button
           className={styles.copyButton}
           onClick={() =>
-            copyToClipboard(extractContentInMarkdown(code), i18n.language)
+            copyToClipboard(unwrapMarkdownCodeFence(code), i18n.language)
           }
         >
           {t("auto_test_case_generation.result.code.btn")}

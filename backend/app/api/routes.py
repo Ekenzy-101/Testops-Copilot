@@ -1,7 +1,6 @@
 """API routes for Kenzy QA Copilot."""
 
 from fastapi import APIRouter, HTTPException, status
-from typing import List
 from app.models import (
     AnalyzeDefectRequest,
     AnalyzeDefectResponse,
@@ -9,7 +8,6 @@ from app.models import (
     CommitTestCaseResponse,
     GenerateAutoTestCaseRequest,
     GenerateAutoTestCaseResponse,
-    GenerateBatchTestCaseRequest,
     GenerateManualTestCaseRequest,
     GenerateManualTestCaseResponse,
     GenerateTestPlanRequest,
@@ -106,39 +104,19 @@ async def generate_auto_test_cases(
     "/test-cases/generate-manual",
     response_model=GenerateManualTestCaseResponse,
     status_code=status.HTTP_200_OK,
-    summary="Generate a manual test case",
-    description="Generate a manual test case in Allure TestOps as Code format from requirements",
+    summary="Generate manual test cases",
+    description="Generate manual test cases in Allure TestOps as Code format from requirements",
 )
 async def generate_manual_test_case(
     request: GenerateManualTestCaseRequest,
 ) -> GenerateManualTestCaseResponse:
-    """Generate a single test case."""
+    """Generate manual test cases."""
     try:
         return await manual_test_generator.generate(request)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating test case: {str(e)}",
-        )
-
-
-@router.post(
-    "/test-cases/generate-batch",
-    response_model=List[GenerateManualTestCaseResponse],
-    status_code=status.HTTP_200_OK,
-    summary="Generate manual test cases",
-    description="Generate manual test cases in batch",
-)
-async def generate_test_cases(
-    request: GenerateBatchTestCaseRequest,
-) -> List[GenerateManualTestCaseResponse]:
-    """Generate multiple test cases."""
-    try:
-        return await manual_test_generator.generate_batch(request)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error generating test cases: {str(e)}",
         )
 
 

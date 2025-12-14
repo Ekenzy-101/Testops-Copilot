@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Card } from "@snack-uikit/card";
 import { Typography } from "@snack-uikit/typography";
-import { OptimizeTestCaseResponse } from "../../types";
-import { getClassNameByPercentage, getClassNameBySeverity } from "../../utils";
+import {
+  getClassNameByPercentage,
+  getClassNameBySeverity,
+  OptimizeTestCaseResponse,
+} from "../../utils";
 import styles from "./TestCaseOptimizationResult.module.scss";
 
 interface OptimizationResultProps {

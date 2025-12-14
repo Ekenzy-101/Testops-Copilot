@@ -1,4 +1,6 @@
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { ButtonFilled } from "@snack-uikit/button";
@@ -10,61 +12,41 @@ import { apiClient } from "../../services";
 import {
   AnalyzeDefectRequest,
   AnalyzeDefectResponse,
-  DefectRecord,
-} from "../../types";
+  AnalyzeDefectSchema,
+  parseDefects,
+} from "../../utils";
 import styles from "./DefectAnalysis.module.scss";
 
-const parseDefects = (value: string): DefectRecord[] => {
-  // Expected per-line: id|title|severity|area|tags(comma)
-  return value
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [id, title, severity, area, tags] = line
-        .split("|")
-        .map((p) => p?.trim());
-      return {
-        id: id || undefined,
-        title: title || "",
-        severity: severity || undefined,
-        area: area || undefined,
-        tags: tags ? tags.split(",").map((t) => t.trim()) : [],
-      };
-    })
-    .filter((d) => d.title);
-};
-
 export const DefectAnalysis = () => {
-  const [defectsInput, setDefectsInput] = useState("");
-  const [requirements, setRequirements] = useState("");
-  const [loading, setLoading] = useState(false);
+  const {
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    setValue,
+    watch,
+  } = useForm<AnalyzeDefectRequest>({
+    resolver: valibotResolver(AnalyzeDefectSchema),
+    defaultValues: {
+      defects: "",
+      requirements: "",
+    },
+  });
   const [result, setResult] = useState<AnalyzeDefectResponse | null>(null);
   const { t } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const onSubmit = async (request: AnalyzeDefectRequest) => {
     setResult(null);
 
     try {
-      const defects = parseDefects(defectsInput);
-      if (!defects.length) {
+      request.defects = parseDefects(request.defects) as any;
+      if (!request.defects.length) {
         toast.error(t("defect_analysis.client.error"));
-        setLoading(false);
         return;
       }
-      const payload: AnalyzeDefectRequest = {
-        defects,
-        requirements: requirements || undefined,
-      };
-      const res = await apiClient.analyzeDefects(payload);
-      setResult(res);
+      const response = await apiClient.analyzeDefects(request);
+      setResult(response);
       toast.success(t("defect_analysis.result.success"));
     } catch (err: any) {
       toast.error(err?.message || t("defect_analysis.result.error"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,36 +65,37 @@ export const DefectAnalysis = () => {
       </Typography>
 
       <Card>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <FieldTextArea
             label={t("defect_analysis.input.label")}
-            value={defectsInput}
-            onChange={setDefectsInput}
+            error={errors.defects?.message}
+            value={watch("defects")}
+            onChange={(value) => setValue("defects", value)}
             placeholder={t("defect_analysis.input.placeholder")}
             minRows={6}
             required
           />
           <FieldTextArea
             label={t("defect_analysis.requirements.label")}
-            value={requirements}
-            onChange={setRequirements}
+            error={errors.requirements?.message}
+            value={watch("requirements")}
+            onChange={(value) => setValue("requirements", value)}
             minRows={3}
           />
           <ButtonFilled
             className={styles.actions}
             label={
-              loading
+              isSubmitting
                 ? t("defect_analysis.btn.label_loading")
                 : t("defect_analysis.btn.label")
             }
-            onClick={handleSubmit}
-            disabled={loading}
+            disabled={isSubmitting}
             type="submit"
           />
         </form>
       </Card>
 
-      {loading && (
+      {isSubmitting && (
         <div className={styles.loader}>
           <Spinner size="l" />
         </div>

@@ -7,7 +7,8 @@
       "path": "./frontend"
     },
     {
-      "path": "./"
+      "path": "./",
+      "name": "root"
     }
   ],
   "settings": {}

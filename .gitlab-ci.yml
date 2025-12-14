@@ -29,11 +29,15 @@ backend:build:
 
 backend:test:
   <<: *backend_template
-  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    when: always
+    paths:
+      - allure-results
+    expire_in: 1 day
   stage: test
   script:
-    - echo "Running backend tests..."
-    - pytest -v --tb=short
+    - echo "Testing backend..."
+    - pytest --alluredir=allure-results --cov=. --cov-fail-under=60
 
 backend:lint:
   <<: *backend_template
@@ -67,6 +71,17 @@ backend:deploy:
   variables:
     VERCEL_PROJECT_ID: prj_AtuLdmdvI4o00My6H01auw3wClAN
 
+pages:
+  stage: deploy
+  image: frankescobar/allure-docker-service
+  script:
+    - allure generate allure-results -o public --clean
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+
 # Frontend Jobs
 .frontend_template: &frontend_template
   before_script:
@@ -94,13 +109,8 @@ frontend:test:
   dependencies:
     - frontend:build
   script:
-    - echo "Running frontend tests..."
-    - |
-      if grep -q '"test"' package.json; then
-        npm test -- --passWithNoTests || echo "Tests completed with warnings"
-      else
-        echo "No test script configured in package.json, skipping tests"
-      fi
+    - echo "Testing frontend..."
+    - npm test
 
 frontend:lint:
   <<: *frontend_template

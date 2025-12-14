@@ -199,20 +199,6 @@ class TestCase(BaseModel):
     )
 
 
-class GenerateBatchTestCaseRequest(BaseModel):
-    """Request for manual test case generation in batch"""
-
-    __test__ = False
-    requirements: str = Field(..., description="Requirements description")
-    test_type: Literal["UI", "API"] = Field(..., description="Type of test")
-    feature: str = Field(..., description="Feature name")
-    story: str = Field(..., description="User story")
-    owner: str = Field(..., description="Test owner")
-    count: int = Field(
-        default=1, ge=1, le=10, description="Number of test cases to generate"
-    )
-
-
 class GenerateManualTestCaseRequest(BaseModel):
     """Request for manual test case generation."""
 

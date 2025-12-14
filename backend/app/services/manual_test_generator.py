@@ -3,17 +3,16 @@
 import re
 import logging
 import time
-from typing import List
+
+from fastapi import HTTPException, status
 from app.models import (
-    TestCase,
     GenerateManualTestCaseRequest,
-    TestCaseStep,
-    Priority,
-    GenerateBatchTestCaseRequest,
     GenerateManualTestCaseResponse,
+    Priority,
+    TestCase,
+    TestCaseStep,
 )
 from app.services.openai_api import OpenAIAPIService
-from app.utils.exceptions import TestGenerationError
 
 logger = logging.getLogger(__name__)
 
@@ -56,23 +55,13 @@ Priority: {priority.value}
 
         prompt += f"""
 The test case must:
-1. Follow AAA pattern (Arrange-Act-Assert)
-2. Use proper Allure decorators:
-   - @allure.manual
-   - @allure.label("owner", owner)
-   - @allure.feature(feature)
-   - @allure.story(story)
-   - @allure.suite(test_type)
-   - @pytest.mark.manual
-   - @allure.title(test_title)
-   - @allure.description(test_description)
-   - @allure.tag(priority)
-   - @allure.label("priority", priority)
-3. Include proper class structure with test methods considering the requirements and test type
-4. Use allure.step context manager for each step with expected results
-5. Include arrange, act, and assert sections clearly
+1. Follow AAA pattern (Arrange-Act-Assert) and include them clearly 
+2. For each test block map as a class method while its details as allure steps if test_type is UI
+3. For each test block map as a class while its details as the class methods if test_type is API
+4. Use all Allure decorators in the example format
+5. Use allure.step context manager for each step with expected results
 
-Generate the complete Python code with no explanations following this format:
+Generate the complete Python code with no explanations following this example format:
 
 @allure.manual
 @allure.label("owner", owner)
@@ -80,13 +69,31 @@ Generate the complete Python code with no explanations following this format:
 @allure.story(story)
 @allure.suite(test_type)
 @pytest.mark.manual
-class TestFeature:
-    @allure.title(test_title)
-    @allure.description(test_description")
+class TestClass:
+    @allure.title(test_title_1)
+    @allure.description(test_description_1)
     @allure.link(jira_link, name=jira_name)  
     @allure.tag(priority)
     @allure.label("priority", priority)
-    def test_method(self) -> None:
+    def test_method_1(self) -> None:
+        # Arrange section
+        with allure.step("Arrange step description"):
+            pass
+        
+        # Act section
+        with allure.step("Act step description"):
+            pass
+        
+        # Assert section
+        with allure.step("Assert step description"):
+            pass
+
+    @allure.title(test_title_2)
+    @allure.description(test_description_2)
+    @allure.link(jira_link, name=jira_name)  
+    @allure.tag(priority)
+    @allure.label("priority", priority)
+    def test_method_2(self) -> None:
         # Arrange section
         with allure.step("Arrange step description"):
             pass
@@ -219,37 +226,11 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
             )
 
         except Exception as e:
-            logger.error(f"Error generating test case: {e}")
-            raise TestGenerationError("Failed to generate manual test case")
-
-    async def generate_batch(
-        self, request: GenerateBatchTestCaseRequest
-    ) -> List[GenerateManualTestCaseResponse]:
-        """
-        Generate multiple test cases.
-
-        Args:
-            request: Batch test case generation request
-
-        Returns:
-            List of generated test case responses
-        """
-        results = []
-
-        for i in range(request.count):
-            test_request = GenerateManualTestCaseRequest(
-                requirements=request.requirements,
-                test_type=request.test_type,
-                feature=request.feature,
-                story=request.story,
-                owner=request.owner,
-                priority=Priority.NORMAL,
+            logger.error(f"ManualTestCaseGeneratorService: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to generate manual test case. Please try again",
             )
-
-            result = await self.generate(test_request)
-            results.append(result)
-
-        return results
 
     def _clean_generated_code(self, code: str) -> str:
         """Clean generated code from markdown formatting."""
@@ -261,7 +242,7 @@ You always follow the AAA (Arrange-Act-Assert) pattern and ensure all Allure dec
         # Ensure imports are present
         if "import allure" not in code:
             code = (
-                "import allure\nfrom allure_commons.test import allure_step\nimport pytest\n\n"
+                "import allure\nimport pytest\n\n"
                 + code
             )
 

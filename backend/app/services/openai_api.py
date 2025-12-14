@@ -1,11 +1,10 @@
 """OpenAI API integration service (Cloud.ru Foundation Models)."""
 
-import asyncio
 import logging
+from fastapi import HTTPException, status
 from openai import AsyncOpenAI
 from typing import Optional
 from tenacity import retry, stop_after_attempt, wait_exponential
-from app.utils.exceptions import OpenAIAPIError
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -63,30 +62,11 @@ class OpenAIAPIService:
 
                 return response.choices[0].message.content
             except Exception as e:
-                logger.error(f"OpenAI API error: {e}")
-                raise OpenAIAPIError(detail="Failed to generate text")
-
-    async def generate_batch(
-        self, prompts: list[str], system_prompt: Optional[str] = None, **kwargs
-    ) -> list[str]:
-        """
-        Generate text for multiple prompts in parallel.
-
-        Args:
-            prompts: List of prompts
-            system_prompt: Optional system prompt
-            **kwargs: Additional parameters
-
-        Returns:
-            List of generated texts
-        """
-
-        tasks = [
-            self.generate(prompt, system_prompt=system_prompt, **kwargs)
-            for prompt in prompts
-        ]
-
-        return await asyncio.gather(*tasks, return_exceptions=True)
+                logger.error(f"OpenAIAPIService: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to generate text. Please try again",
+                )
 
     async def health_check(self) -> bool:
         """Check if OpenAI API is available."""

@@ -3,6 +3,9 @@
 *.local
 *.log*
 
+# Testing
+coverage/
+
 # Dist
 node_modules
 build/

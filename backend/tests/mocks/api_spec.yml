@@ -1,0 +1,1160 @@
+components:
+  schemas:
+    APITestRequest:
+      description: Request for API test case generation.
+      properties:
+        auth_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Bearer token for authentication
+          title: Auth Token
+        base_url:
+          description: API base URL
+          title: Base Url
+          type: string
+        endpoints:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          description: Specific endpoints to test
+          title: Endpoints
+        openapi_spec:
+          description: OpenAPI 3.0 specification (YAML or JSON)
+          title: Openapi Spec
+          type: string
+        test_cases:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          description: Optional test case code strings
+          title: Test Cases
+      required:
+      - openapi_spec
+      - base_url
+      title: APITestRequest
+      type: object
+    AnalyzeDefectRequest:
+      description: Request for analyzing historical defects.
+      properties:
+        defects:
+          description: List of historical defects to analyze
+          items:
+            $ref: '#/components/schemas/DefectRecord'
+          title: Defects
+          type: array
+        requirements:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Current requirements to align analysis
+          title: Requirements
+      required:
+      - defects
+      title: AnalyzeDefectRequest
+      type: object
+    AnalyzeDefectResponse:
+      description: Response with hotspot insights and recommendations.
+      properties:
+        hotspots:
+          description: Areas with elevated risk
+          items:
+            $ref: '#/components/schemas/DefectHotspot'
+          title: Hotspots
+          type: array
+        model_used:
+          description: LLM model used
+          title: Model Used
+          type: string
+        summary:
+          description: Summary of findings
+          title: Summary
+          type: string
+      required:
+      - summary
+      - model_used
+      title: AnalyzeDefectResponse
+      type: object
+    CommitTestCaseRequest:
+      description: Request for test case commit.
+      properties:
+        branch:
+          default: main
+          description: Target branch
+          title: Branch
+          type: string
+        commit_message:
+          description: Commit message
+          title: Commit Message
+          type: string
+        content:
+          description: File content to commit
+          title: Content
+          type: string
+        file_path:
+          description: Path of the file to create/update
+          title: File Path
+          type: string
+        project_id:
+          description: GitLab project ID or path
+          title: Project Id
+          type: string
+      required:
+      - commit_message
+      - content
+      - file_path
+      - project_id
+      title: CommitTestCaseRequest
+      type: object
+    CommitTestCaseResponse:
+      description: Response for test case commit.
+      properties:
+        branch:
+          title: Branch
+          type: string
+        commit_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Commit Id
+        file_path:
+          title: File Path
+          type: string
+        project_id:
+          title: Project Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - branch
+      - file_path
+      - project_id
+      - status
+      title: CommitTestCaseResponse
+      type: object
+    CoverageAnalysis:
+      description: Coverage analysis result.
+      properties:
+        coverage_percentage:
+          description: Coverage percentage
+          title: Coverage Percentage
+          type: number
+        covered_areas:
+          description: List of covered areas
+          items:
+            type: string
+          title: Covered Areas
+          type: array
+        covered_functionality:
+          description: Covered functionality items
+          title: Covered Functionality
+          type: integer
+        total_functionality:
+          description: Total functionality items
+          title: Total Functionality
+          type: integer
+        uncovered_areas:
+          description: List of uncovered areas
+          items:
+            type: string
+          title: Uncovered Areas
+          type: array
+      required:
+      - total_functionality
+      - covered_functionality
+      - coverage_percentage
+      title: CoverageAnalysis
+      type: object
+    CoverageGap:
+      description: Coverage gap identification.
+      properties:
+        description:
+          description: Description of the gap
+          title: Description
+          type: string
+        functionality:
+          description: Uncovered functionality
+          title: Functionality
+          type: string
+        severity:
+          $ref: '#/components/schemas/GapSeverity'
+          description: Severity of the gap
+        suggested_tests:
+          description: Suggested test cases to cover
+          items:
+            type: string
+          title: Suggested Tests
+          type: array
+      required:
+      - functionality
+      - severity
+      - description
+      title: CoverageGap
+      type: object
+    DefectHotspot:
+      description: Identified hotspot or risk area.
+      properties:
+        area:
+          title: Area
+          type: string
+        priority:
+          title: Priority
+          type: string
+        recommendation:
+          title: Recommendation
+          type: string
+        risk:
+          title: Risk
+          type: string
+      required:
+      - area
+      - risk
+      - recommendation
+      - priority
+      title: DefectHotspot
+      type: object
+    DefectRecord:
+      description: Single historical defect entry.
+      properties:
+        area:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Functional area or feature
+          title: Area
+        component:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Component or module
+          title: Component
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Detailed description
+          title: Description
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Defect identifier (Jira, etc.)
+          title: Id
+        severity:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Severity (e.g., Critical/High)
+          title: Severity
+        tags:
+          description: Labels or tags
+          items:
+            type: string
+          title: Tags
+          type: array
+        title:
+          description: Defect title or summary
+          title: Title
+          type: string
+      required:
+      - title
+      title: DefectRecord
+      type: object
+    DuplicateTest:
+      description: Duplicate test identification.
+      properties:
+        reason:
+          description: Reason for duplication
+          title: Reason
+          type: string
+        recommendation:
+          description: Recommendation to resolve
+          title: Recommendation
+          type: string
+        similarity_score:
+          description: Similarity score 0-1
+          maximum: 1
+          minimum: 0
+          title: Similarity Score
+          type: number
+        test_id_1:
+          title: Test Id 1
+          type: string
+        test_id_2:
+          title: Test Id 2
+          type: string
+      required:
+      - test_id_1
+      - test_id_2
+      - similarity_score
+      - reason
+      - recommendation
+      title: DuplicateTest
+      type: object
+    GapSeverity:
+      description: Severity of coverage gap.
+      enum:
+      - CRITICAL
+      - HIGH
+      - MEDIUM
+      - LOW
+      title: GapSeverity
+      type: string
+    GenerateAutoTestCaseRequest:
+      description: Request for automated test case generation.
+      properties:
+        api_request:
+          anyOf:
+          - $ref: '#/components/schemas/APITestRequest'
+          - type: 'null'
+        test_type:
+          enum:
+          - UI
+          - API
+          title: Test Type
+          type: string
+        ui_request:
+          anyOf:
+          - $ref: '#/components/schemas/UITestRequest'
+          - type: 'null'
+      required:
+      - test_type
+      title: GenerateAutoTestCaseRequest
+      type: object
+    GenerateAutoTestCaseResponse:
+      description: Response for automated test case generation.
+      properties:
+        dependencies:
+          description: Required dependencies
+          items:
+            type: string
+          title: Dependencies
+          type: array
+        framework:
+          description: Test framework used
+          title: Framework
+          type: string
+        generation_time:
+          title: Generation Time
+          type: number
+        model_used:
+          title: Model Used
+          type: string
+        test_code:
+          description: Generated pytest test code
+          title: Test Code
+          type: string
+        test_count:
+          description: Number of generated tests
+          title: Test Count
+          type: integer
+      required:
+      - test_code
+      - test_count
+      - framework
+      - generation_time
+      - model_used
+      title: GenerateAutoTestCaseResponse
+      type: object
+    GenerateBatchTestCaseRequest:
+      description: Request for manual test case generation in batch
+      properties:
+        count:
+          default: 1
+          description: Number of test cases to generate
+          maximum: 10
+          minimum: 1
+          title: Count
+          type: integer
+        feature:
+          description: Feature name
+          title: Feature
+          type: string
+        owner:
+          description: Test owner
+          title: Owner
+          type: string
+        requirements:
+          description: Requirements description
+          title: Requirements
+          type: string
+        story:
+          description: User story
+          title: Story
+          type: string
+        test_type:
+          description: Type of test
+          enum:
+          - UI
+          - API
+          title: Test Type
+          type: string
+      required:
+      - requirements
+      - test_type
+      - feature
+      - story
+      - owner
+      title: GenerateBatchTestCaseRequest
+      type: object
+    GenerateManualTestCaseRequest:
+      description: Request for manual test case generation.
+      properties:
+        feature:
+          description: Feature name
+          title: Feature
+          type: string
+        jira_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: JIRA ticket link
+          title: Jira Link
+        jira_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: JIRA ticket name
+          title: Jira Name
+        owner:
+          description: Test owner
+          title: Owner
+          type: string
+        priority:
+          $ref: '#/components/schemas/Priority'
+          default: NORMAL
+          description: Test priority
+        requirements:
+          description: Requirements description (UI or API)
+          title: Requirements
+          type: string
+        story:
+          description: User story
+          title: Story
+          type: string
+        test_type:
+          description: Type of test
+          enum:
+          - UI
+          - API
+          title: Test Type
+          type: string
+      required:
+      - requirements
+      - test_type
+      - feature
+      - story
+      - owner
+      title: GenerateManualTestCaseRequest
+      type: object
+    GenerateManualTestCaseResponse:
+      description: Response for manual test case generation
+      properties:
+        generation_time:
+          title: Generation Time
+          type: number
+        model_used:
+          title: Model Used
+          type: string
+        test_case:
+          $ref: '#/components/schemas/TestCase'
+      required:
+      - test_case
+      - generation_time
+      - model_used
+      title: GenerateManualTestCaseResponse
+      type: object
+    GenerateTestPlanRequest:
+      description: Request for test plan generation.
+      properties:
+        environments:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Environments and platforms to cover
+          title: Environments
+        goals:
+          description: Testing goals/objectives
+          items:
+            type: string
+          title: Goals
+          type: array
+        out_of_scope:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Out-of-scope areas
+          title: Out Of Scope
+        product:
+          description: Product or system under test
+          title: Product
+          type: string
+        risks:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Known risks and constraints
+          title: Risks
+        scope:
+          description: In-scope functionality or features
+          title: Scope
+          type: string
+        timelines:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Timelines or milestones
+          title: Timelines
+      required:
+      - product
+      - goals
+      - scope
+      title: GenerateTestPlanRequest
+      type: object
+    GenerateTestPlanResponse:
+      description: Generated test plan.
+      properties:
+        model_used:
+          description: LLM model used
+          title: Model Used
+          type: string
+        plan:
+          description: Structured test plan text
+          title: Plan
+          type: string
+        sections:
+          description: List of section titles included in the plan
+          items:
+            type: string
+          title: Sections
+          type: array
+      required:
+      - plan
+      - sections
+      - model_used
+      title: GenerateTestPlanResponse
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    IssueSeverity:
+      description: Validation issue severity.
+      enum:
+      - ERROR
+      - WARNING
+      - INFO
+      title: IssueSeverity
+      type: string
+    OptimizationSuggestion:
+      description: Optimization suggestion.
+      properties:
+        description:
+          description: Description of suggestion
+          title: Description
+          type: string
+        effort:
+          description: Estimated effort
+          title: Effort
+          type: string
+        impact:
+          description: Expected impact
+          title: Impact
+          type: string
+        suggestion_type:
+          description: Type of suggestion
+          title: Suggestion Type
+          type: string
+        test_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Related test ID if applicable
+          title: Test Id
+      required:
+      - suggestion_type
+      - description
+      - impact
+      - effort
+      title: OptimizationSuggestion
+      type: object
+    OptimizeTestCaseRequest:
+      description: Request for test case optimization.
+      properties:
+        requirements:
+          description: Requirements description
+          title: Requirements
+          type: string
+        test_cases:
+          description: List of test case code strings
+          items:
+            type: string
+          title: Test Cases
+          type: array
+      required:
+      - test_cases
+      - requirements
+      title: OptimizeTestCaseRequest
+      type: object
+    OptimizeTestCaseResponse:
+      description: Response for test case optimization.
+      properties:
+        conflicting_tests:
+          description: List of conflicting test IDs
+          items:
+            type: string
+          title: Conflicting Tests
+          type: array
+        coverage_analysis:
+          $ref: '#/components/schemas/CoverageAnalysis'
+        coverage_gaps:
+          items:
+            $ref: '#/components/schemas/CoverageGap'
+          title: Coverage Gaps
+          type: array
+        duplicates:
+          items:
+            $ref: '#/components/schemas/DuplicateTest'
+          title: Duplicates
+          type: array
+        outdated_tests:
+          description: List of outdated test IDs
+          items:
+            type: string
+          title: Outdated Tests
+          type: array
+        suggestions:
+          items:
+            $ref: '#/components/schemas/OptimizationSuggestion'
+          title: Suggestions
+          type: array
+      required:
+      - coverage_analysis
+      - duplicates
+      - coverage_gaps
+      - suggestions
+      title: OptimizeTestCaseResponse
+      type: object
+    Priority:
+      description: Test priority levels.
+      enum:
+      - CRITICAL
+      - NORMAL
+      - LOW
+      title: Priority
+      type: string
+    TestCase:
+      description: Generated test case.
+      properties:
+        act_section:
+          title: Act Section
+          type: string
+        arrange_section:
+          title: Arrange Section
+          type: string
+        assert_section:
+          title: Assert Section
+          type: string
+        code:
+          description: Generated Python code in Allure TestOps as Code format
+          title: Code
+          type: string
+        feature:
+          title: Feature
+          type: string
+        function_name:
+          title: Function Name
+          type: string
+        jira_link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Jira Link
+        jira_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Jira Name
+        owner:
+          title: Owner
+          type: string
+        priority:
+          $ref: '#/components/schemas/Priority'
+        steps:
+          items:
+            $ref: '#/components/schemas/TestCaseStep'
+          title: Steps
+          type: array
+        story:
+          title: Story
+          type: string
+        suite:
+          title: Suite
+          type: string
+        test_type:
+          title: Test Type
+          type: string
+        title:
+          title: Title
+          type: string
+      required:
+      - title
+      - function_name
+      - feature
+      - story
+      - owner
+      - priority
+      - test_type
+      - suite
+      - steps
+      - arrange_section
+      - act_section
+      - assert_section
+      - code
+      title: TestCase
+      type: object
+    TestCaseStep:
+      description: Single step in a test case.
+      properties:
+        action:
+          title: Action
+          type: string
+        description:
+          title: Description
+          type: string
+        expected_result:
+          title: Expected Result
+          type: string
+        step_number:
+          title: Step Number
+          type: integer
+      required:
+      - step_number
+      - description
+      - action
+      - expected_result
+      title: TestCaseStep
+      type: object
+    UITestRequest:
+      description: Request for UI e2e test case generation.
+      properties:
+        browser:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Target browser
+          title: Browser
+        framework:
+          default: pytest
+          description: Test framework
+          enum:
+          - pytest
+          - playwright
+          - selenium
+          title: Framework
+          type: string
+        requirements:
+          description: UI requirements description
+          title: Requirements
+          type: string
+        test_cases:
+          description: Test case code strings
+          items:
+            type: string
+          title: Test Cases
+          type: array
+      required:
+      - test_cases
+      - requirements
+      title: UITestRequest
+      type: object
+    ValidateTestCaseRequest:
+      description: Request for test case validation.
+      properties:
+        strict_mode:
+          default: false
+          description: Use strict validation mode
+          title: Strict Mode
+          type: boolean
+        test_cases:
+          description: List of test case code strings to validate
+          items:
+            type: string
+          title: Test Cases
+          type: array
+      required:
+      - test_cases
+      title: ValidateTestCaseRequest
+      type: object
+    ValidateTestCaseResponse:
+      description: Response for test case validation.
+      properties:
+        invalid_tests:
+          title: Invalid Tests
+          type: integer
+        overall_compliance:
+          description: Overall compliance score 0-1
+          maximum: 1
+          minimum: 0
+          title: Overall Compliance
+          type: number
+        results:
+          items:
+            $ref: '#/components/schemas/ValidationResult'
+          title: Results
+          type: array
+        summary:
+          description: Summary of validation
+          title: Summary
+          type: string
+        total_tests:
+          title: Total Tests
+          type: integer
+        valid_tests:
+          title: Valid Tests
+          type: integer
+      required:
+      - total_tests
+      - valid_tests
+      - invalid_tests
+      - results
+      - overall_compliance
+      - summary
+      title: ValidateTestCaseResponse
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+    ValidationIssue:
+      description: Single validation issue.
+      properties:
+        field:
+          description: Field or section with issue
+          title: Field
+          type: string
+        issue:
+          description: Description of the issue
+          title: Issue
+          type: string
+        recommendation:
+          description: Recommendation to fix
+          title: Recommendation
+          type: string
+        severity:
+          $ref: '#/components/schemas/IssueSeverity'
+      required:
+      - severity
+      - field
+      - issue
+      - recommendation
+      title: ValidationIssue
+      type: object
+    ValidationResult:
+      description: Validation result for a single test case.
+      properties:
+        aaa_compliance:
+          description: AAA pattern compliance
+          title: Aaa Compliance
+          type: boolean
+        allure_decorators_complete:
+          description: Allure decorators completeness
+          title: Allure Decorators Complete
+          type: boolean
+        is_valid:
+          title: Is Valid
+          type: boolean
+        issues:
+          items:
+            $ref: '#/components/schemas/ValidationIssue'
+          title: Issues
+          type: array
+        structure_valid:
+          description: Test structure validity
+          title: Structure Valid
+          type: boolean
+        test_id:
+          title: Test Id
+          type: string
+      required:
+      - test_id
+      - is_valid
+      - issues
+      - aaa_compliance
+      - allure_decorators_complete
+      - structure_valid
+      title: ValidationResult
+      type: object
+info:
+  description: AI-powered test automation assistant for QA engineers
+  title: Kenzy QA Copilot
+  version: 1.1.0
+openapi: 3.1.0
+paths:
+  /:
+    get:
+      description: Root endpoint.
+      operationId: root__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Root
+      tags:
+      - root
+  /api/v1/defects/analyze:
+    post:
+      description: Identify hotspots and recommendations from historical defects
+      operationId: analyze_defects_api_v1_defects_analyze_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzeDefectRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzeDefectResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Analyze historical defects
+      tags:
+      - testops
+  /api/v1/health:
+    get:
+      description: Check service health and API connectivity
+      operationId: health_check_api_v1_health_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Health check
+      tags:
+      - testops
+  /api/v1/test-cases/commit:
+    post:
+      description: Create or update a file with test cases in GitLab
+      operationId: commit_test_cases_api_v1_test_cases_commit_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommitTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitTestCaseResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Commit test cases to GitLab
+      tags:
+      - testops
+  /api/v1/test-cases/generate-auto:
+    post:
+      description: Generate automated e2e UI or API tests from test cases and specifications
+      operationId: generate_auto_test_cases_api_v1_test_cases_generate_auto_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateAutoTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateAutoTestCaseResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate automated tests
+      tags:
+      - testops
+    post:
+      description: Generate manual test cases in batch
+      operationId: generate_test_cases_api_v1_test_cases_generate_batch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateBatchTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GenerateManualTestCaseResponse'
+                title: Response Generate Test Cases Api V1 Test Cases Generate Batch
+                  Post
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate manual test cases
+      tags:
+      - testops
+  /api/v1/test-cases/generate-manual:
+    post:
+      description: Generate a manual test case in Allure TestOps as Code format from
+        requirements
+      operationId: generate_manual_test_case_api_v1_test_cases_generate_manual_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateManualTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateManualTestCaseResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate a manual test case
+      tags:
+      - testops
+  /api/v1/test-cases/optimize:
+    post:
+      description: Analyze test coverage, find duplicates, identify gaps, and suggest
+        improvements
+      operationId: optimize_test_cases_api_v1_test_cases_optimize_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptimizeTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeTestCaseResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Optimize test cases
+      tags:
+      - testops
+  /api/v1/test-cases/validate:
+    post:
+      description: Validate test cases against Allure standards and AAA pattern
+      operationId: validate_test_cases_api_v1_test_cases_validate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateTestCaseRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateTestCaseResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Validate test cases
+      tags:
+      - testops
+  /api/v1/test-plan/generate:
+    post:
+      description: Generate a concise, structured test plan from goals, scope, and
+        risks
+      operationId: generate_test_plan_api_v1_test_plan_generate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateTestPlanRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateTestPlanResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate a test plan
+      tags:
+      - testops
