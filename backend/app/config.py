@@ -16,14 +16,14 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # GitLab API
-    gitlab_access_token: str
+    gitlab_access_token: str = ""
     gitlab_api_url: str = "https://gitlab.com/api/v4"
     gitlab_api_timeout: int = 10
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
 
     # OpenAI API
-    openai_api_key: str
+    openai_api_key: str = ""
     openai_api_url: str = "https://foundation-models.api.cloud.ru/v1"
     openai_log: str = "info"
     openai_model: str = "ai-sage/GigaChat3-10B-A1.8B"
