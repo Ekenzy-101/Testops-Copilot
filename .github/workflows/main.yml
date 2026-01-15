@@ -78,8 +78,8 @@ jobs:
         run: |
           cd backend
           bash <(curl -fsSL cli.new)
-          railway link -p kenzyqa -s service api
-          railway up -d
+          railway link -p kenzyqa -s api
+          railway up -d --path-as-root .
 
   frontend:
     needs: [detect-changes]
@@ -121,5 +121,5 @@ jobs:
         run: |
           cd frontend
           bash <(curl -fsSL cli.new)
-          railway link -p kenzyqa -s service web
-          railway up -d
+          railway link -p kenzyqa -s web
+          railway up -d --path-as-root .
