@@ -1,8 +1,5 @@
-import i18next from "i18next";
-import Backend, { HttpBackendOptions } from "i18next-http-backend";
-import { I18nextProvider } from "react-i18next";
 import { BrowserRouter, Routes, Route } from "react-router";
-import { ThemeProvider } from "./theme/ThemeProvider";
+import { TranslationProvider, ThemeProvider } from "./providers";
 import { Layout } from "./components";
 import {
   AutoTestCaseGeneration,
@@ -24,19 +21,10 @@ import {
   TO_VALIDATE_TEST_CASE,
 } from "./utils";
 
-i18next.use(Backend).init<HttpBackendOptions>({
-  backend: {
-    loadPath: "/translations/{{lng}}.json",
-  },
-  debug: true,
-  fallbackLng: "ru",
-  interpolation: { escapeValue: false },
-});
-
 const App = () => {
   return (
-    <I18nextProvider i18n={i18next}>
-      <ThemeProvider>
+    <ThemeProvider>
+      <TranslationProvider language="ru">
         <BrowserRouter>
           <Layout>
             <Routes>
@@ -66,8 +54,8 @@ const App = () => {
             </Routes>
           </Layout>
         </BrowserRouter>
-      </ThemeProvider>
-    </I18nextProvider>
+      </TranslationProvider>
+    </ThemeProvider>
   );
 };
 

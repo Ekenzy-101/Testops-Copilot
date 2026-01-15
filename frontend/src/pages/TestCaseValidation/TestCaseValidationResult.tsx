@@ -28,6 +28,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
     <div className={styles.container}>
       <Card className={styles.summaryCard}>
         <Typography
+          data-testid="title"
           family="mono"
           purpose="title"
           size="m"
@@ -41,7 +42,12 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
             <Typography family="mono" purpose="body" size="s">
               {t("test_case_validation.result.total_tests")}
             </Typography>
-            <Typography family="mono" purpose="title" size="m">
+            <Typography
+              data-testid="total_tests"
+              family="mono"
+              purpose="title"
+              size="m"
+            >
               {total_tests}
             </Typography>
           </div>
@@ -80,6 +86,7 @@ export const ValidationResult = ({ result }: ValidationResultProps) => {
                 overall_compliance * 100,
                 styles,
               )}
+              data-testid="overall_compliance"
               family="mono"
               purpose="title"
               size="m"

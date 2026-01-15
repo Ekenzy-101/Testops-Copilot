@@ -13,6 +13,7 @@ export default defineConfig({
   },
   globals: true,
   plugins: rsbuildConfig.plugins,
+  resolve: rsbuildConfig.resolve,
   setupFiles: ["./rstest.setup.ts"],
   testEnvironment: "jsdom",
 });

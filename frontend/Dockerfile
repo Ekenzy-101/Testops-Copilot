@@ -1,6 +1,8 @@
 # Use official Node.js image
 FROM node:24.10.0-alpine AS build
 
+ARG PUBLIC_API_BASE_URL
+
 # Set the working directory
 WORKDIR /app
 
@@ -36,4 +38,4 @@ USER nodejs
 EXPOSE 3000
 
 # Command to run the application
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]

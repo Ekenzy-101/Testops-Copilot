@@ -78,14 +78,3 @@ async def root():
         "version": settings.app_version,
         "status": "running",
     }
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(
-        "app.app:app",
-        host=settings.app_host,
-        port=settings.app_port,
-        reload=settings.app_debug,
-    )

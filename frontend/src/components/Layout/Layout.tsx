@@ -5,7 +5,7 @@ import { Link, useLocation, redirect } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { ButtonFilled, ButtonOutline } from "@snack-uikit/button";
 import { Drawer } from "@snack-uikit/drawer";
-import { useTheme, Theme } from "../../theme/ThemeProvider";
+import { useTheme, Theme } from "../../providers";
 import styles from "./Layout.module.scss";
 import {
   APP_NAME,
