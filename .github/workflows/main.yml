@@ -6,6 +6,11 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  GITLAB_ACCESS_TOKEN: ${{ secrets.GITLAB_ACCESS_TOKEN }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -31,7 +36,6 @@ jobs:
               - 'frontend/**'
 
   backend:
-    name: Deploy Backend
     needs: [detect-changes]
     if: ${{ needs.detect-changes.outputs.backend == 'true'}}
     runs-on: ubuntu-latest
@@ -69,8 +73,6 @@ jobs:
           pytest --alluredir=allure-results --cov=. --cov-fail-under=60
 
       - name: Deploy Code
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
         run: |
           cd backend
           bash <(curl -fsSL cli.new)
@@ -78,7 +80,6 @@ jobs:
           railway up -d
 
   frontend:
-    name: Deploy Frontend
     needs: [detect-changes]
     if: ${{ needs.detect-changes.outputs.frontend == 'true'}}
     runs-on: ubuntu-latest
@@ -115,8 +116,6 @@ jobs:
           npm run test
 
       - name: Deploy Code
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
         run: |
           cd frontend
           bash <(curl -fsSL cli.new)

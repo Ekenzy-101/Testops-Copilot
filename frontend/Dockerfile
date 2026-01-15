@@ -1,6 +1,7 @@
 # Use official Node.js image
 FROM node:24.10.0-alpine AS build
 
+# Specify the env variable
 ARG PUBLIC_API_BASE_URL
 
 # Set the working directory
